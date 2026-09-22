@@ -1,0 +1,714 @@
+/* ==========================================================================
+   Vanilla Case List — Seasonal themes
+   --------------------------------------------------------------------------
+   Every theme is a re-tint of the palette tokens declared in styles.css.
+   Nothing here restyles individual components: load this file AFTER
+   styles.css and the whole site follows along.
+
+   Adding a season means two things and no more:
+     1. a  :root[data-theme="<id>"]  block below,
+     2. an entry in the THEMES table in themes.js (id, label, date window).
+
+   House rules for a theme, so the site stays readable:
+     - the cream/paper family stays light, the ink family stays dark;
+     - the difficulty tokens (--easy / --medium / --hard) are left alone,
+       so blue/gold/red keep meaning the same thing all year round.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Shared seasonal plumbing
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Accent + ornament every theme may override. The classic look opts out of
+     the ornament by leaving the glyph empty. */
+  --season-accent: var(--gold);
+  --season-glyph: '';
+  --season-fx-size: 1.6rem;
+}
+
+/* The falling-ornament layer (snow, leaves, bats…). Purely decorative, so it
+   never takes pointer events and disappears for reduced-motion visitors. */
+.season-fx {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.season-fx span {
+  position: absolute;
+  top: -8vh;
+  font-size: var(--season-fx-size);
+  line-height: 1;
+  opacity: 0.75;
+  animation: season-fall linear infinite;
+  will-change: transform;
+}
+
+@keyframes season-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(var(--drift, 2vw), 110vh, 0) rotate(var(--spin, 180deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-fx {
+    display: none;
+  }
+}
+
+/* The season ornament flanking the header, drawn from --season-glyph. */
+.site-header .season-mark {
+  display: block;
+  font-size: 1.4rem;
+  letter-spacing: 0.6rem;
+  margin: 0.35rem 0 0;
+  opacity: 0.85;
+}
+
+.site-header .season-mark::before {
+  content: var(--season-glyph);
+}
+
+/* --------------------------------------------------------------------------
+   Classic Vanilla — the original courtroom palette
+   --------------------------------------------------------------------------
+   styles.css already declares these on :root. They are restated here so a
+   nested [data-theme="classic"] element (a swatch on themes.html, say) shows
+   the classic look even while the page around it wears a season.
+   -------------------------------------------------------------------------- */
+
+[data-theme="classic"] {
+  --cream: #f5e7c4;
+  --cream-light: #fcf2d9;
+  --cream-deep: #e9d29a;
+  --paper: #fffaeb;
+
+  --ink: #2a1f0a;
+  --ink-soft: #4d3c1a;
+  --ink-light: #7a6738;
+
+  --blue: #1d4391;
+  --blue-deep: #0a2563;
+  --blue-light: #82a8e6;
+  --blue-pale: #d6e2f7;
+
+  --gold: #c9962b;
+  --gold-light: #f0c14b;
+
+  --celeste-light: #e9fbfa;
+  --celeste: #cdf1ee;
+  --celeste-deep: #9fdedb;
+  --celeste-text: #0f5a57;
+
+  --red: #b13438;
+  --red-deep: #7d1a1f;
+  --green: #4f8a3d;
+  --green-light: #b6dca5;
+  --green-pale: #dff0d4;
+
+  --shadow-soft: 0 2px 6px rgba(42, 31, 10, 0.12);
+  --shadow-card: 0 4px 0 rgba(42, 31, 10, 0.85), 0 6px 12px rgba(42, 31, 10, 0.18);
+  --shadow-deep: 0 8px 0 rgba(42, 31, 10, 0.85), 0 14px 30px rgba(42, 31, 10, 0.22);
+
+  --season-accent: #c9962b;
+  --season-glyph: '';
+}
+
+/* --------------------------------------------------------------------------
+   New Year — midnight navy, gold confetti
+   -------------------------------------------------------------------------- */
+
+[data-theme="newyear"] {
+  --cream: #e7e4f4;
+  --cream-light: #f6f4fd;
+  --cream-deep: #cdc6e6;
+  --paper: #fbfaff;
+
+  --ink: #191540;
+  --ink-soft: #342c63;
+  --ink-light: #6b649e;
+
+  --blue: #2f3f9e;
+  --blue-deep: #10154f;
+  --blue-light: #8f9ae4;
+  --blue-pale: #dcdff8;
+
+  --gold: #bf9220;
+  --gold-light: #f4d370;
+
+  --celeste-light: #eef1ff;
+  --celeste: #d8def7;
+  --celeste-deep: #a9b4e8;
+  --celeste-text: #262a6b;
+
+  --red: #a4335f;
+  --red-deep: #6d1c3c;
+  --green: #3f7d74;
+  --green-light: #a9d8d1;
+  --green-pale: #dcefec;
+
+  --shadow-soft: 0 2px 6px rgba(25, 21, 64, 0.14);
+  --shadow-card: 0 4px 0 rgba(25, 21, 64, 0.85), 0 6px 12px rgba(25, 21, 64, 0.2);
+  --shadow-deep: 0 8px 0 rgba(25, 21, 64, 0.85), 0 14px 30px rgba(25, 21, 64, 0.24);
+
+  --season-accent: #f4d370;
+  --season-glyph: '\2728';
+}
+
+:root[data-theme="newyear"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(244, 211, 112, 0.14) 0%, transparent 26%),
+    radial-gradient(circle at 88% 92%, rgba(47, 63, 158, 0.12) 0%, transparent 30%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(25, 21, 64, 0.03) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Valentine's — rose paper, plum ink
+   -------------------------------------------------------------------------- */
+
+[data-theme="valentines"] {
+  --cream: #fbe2ea;
+  --cream-light: #fff3f7;
+  --cream-deep: #f3c0d2;
+  --paper: #fffafc;
+
+  --ink: #46112f;
+  --ink-soft: #6c2049;
+  --ink-light: #a05b7c;
+
+  --blue: #8b2f77;
+  --blue-deep: #5c1a4e;
+  --blue-light: #d99ec9;
+  --blue-pale: #f7dcee;
+
+  --gold: #c76a86;
+  --gold-light: #f0a8bc;
+
+  --celeste-light: #fff0f4;
+  --celeste: #fbd8e3;
+  --celeste-deep: #eeaec5;
+  --celeste-text: #7a2148;
+
+  --red: #c02b4c;
+  --red-deep: #85162f;
+  --green: #8a7f4e;
+  --green-light: #ddd2a8;
+  --green-pale: #f0e9cf;
+
+  --shadow-soft: 0 2px 6px rgba(70, 17, 47, 0.14);
+  --shadow-card: 0 4px 0 rgba(70, 17, 47, 0.8), 0 6px 12px rgba(70, 17, 47, 0.2);
+  --shadow-deep: 0 8px 0 rgba(70, 17, 47, 0.8), 0 14px 30px rgba(70, 17, 47, 0.24);
+
+  --season-accent: #c02b4c;
+  --season-glyph: '\2764';
+}
+
+:root[data-theme="valentines"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(192, 43, 76, 0.1) 0%, transparent 26%),
+    radial-gradient(circle at 88% 92%, rgba(139, 47, 119, 0.09) 0%, transparent 30%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(70, 17, 47, 0.03) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Easter — pastel spring, painted eggs
+   -------------------------------------------------------------------------- */
+
+[data-theme="easter"] {
+  --cream: #f3f7dd;
+  --cream-light: #fbfdf0;
+  --cream-deep: #dde7bb;
+  --paper: #fdfff6;
+
+  --ink: #2f4021;
+  --ink-soft: #4a6135;
+  --ink-light: #7b8f63;
+
+  --blue: #4d7fbe;
+  --blue-deep: #2b5488;
+  --blue-light: #a9c9ec;
+  --blue-pale: #dfecf9;
+
+  --gold: #d3a83c;
+  --gold-light: #f6da7f;
+
+  --celeste-light: #f0fbf4;
+  --celeste: #d3f0de;
+  --celeste-deep: #a6ddbb;
+  --celeste-text: #1f5c39;
+
+  --red: #d4658a;
+  --red-deep: #a03c60;
+  --green: #5c9a45;
+  --green-light: #bfe3ab;
+  --green-pale: #e4f4d9;
+
+  --shadow-soft: 0 2px 6px rgba(47, 64, 33, 0.12);
+  --shadow-card: 0 4px 0 rgba(47, 64, 33, 0.75), 0 6px 12px rgba(47, 64, 33, 0.18);
+  --shadow-deep: 0 8px 0 rgba(47, 64, 33, 0.75), 0 14px 30px rgba(47, 64, 33, 0.22);
+
+  --season-accent: #d4658a;
+  --season-glyph: '\1F430';
+}
+
+:root[data-theme="easter"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(212, 101, 138, 0.1) 0%, transparent 26%),
+    radial-gradient(circle at 88% 92%, rgba(92, 154, 69, 0.1) 0%, transparent 30%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(47, 64, 33, 0.025) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Summer — sun-bleached sand and sea
+   -------------------------------------------------------------------------- */
+
+[data-theme="summer"] {
+  --cream: #fdeec8;
+  --cream-light: #fff8e2;
+  --cream-deep: #f3d79a;
+  --paper: #fffdf2;
+
+  --ink: #133f4a;
+  --ink-soft: #1f5d6b;
+  --ink-light: #4e8896;
+
+  --blue: #0f7d92;
+  --blue-deep: #06505f;
+  --blue-light: #7fcedd;
+  --blue-pale: #d4f0f6;
+
+  --gold: #e08c1e;
+  --gold-light: #ffc861;
+
+  --celeste-light: #eafbfd;
+  --celeste: #c6f0f6;
+  --celeste-deep: #92dbe6;
+  --celeste-text: #0a5462;
+
+  --red: #e0603f;
+  --red-deep: #a63c21;
+  --green: #3f9a6c;
+  --green-light: #a8e0c4;
+  --green-pale: #d9f2e6;
+
+  --shadow-soft: 0 2px 6px rgba(19, 63, 74, 0.13);
+  --shadow-card: 0 4px 0 rgba(19, 63, 74, 0.8), 0 6px 12px rgba(19, 63, 74, 0.18);
+  --shadow-deep: 0 8px 0 rgba(19, 63, 74, 0.8), 0 14px 30px rgba(19, 63, 74, 0.22);
+
+  --season-accent: #e08c1e;
+  --season-glyph: '\2600';
+}
+
+:root[data-theme="summer"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(224, 140, 30, 0.13) 0%, transparent 26%),
+    radial-gradient(circle at 88% 92%, rgba(15, 125, 146, 0.12) 0%, transparent 30%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(19, 63, 74, 0.025) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Autumn — amber, rust and falling leaves
+   -------------------------------------------------------------------------- */
+
+[data-theme="autumn"] {
+  --cream: #f6e3c3;
+  --cream-light: #fcf1dc;
+  --cream-deep: #e5c795;
+  --paper: #fff8ec;
+
+  --ink: #3a2109;
+  --ink-soft: #5b3614;
+  --ink-light: #8d6335;
+
+  --blue: #6a5a2c;
+  --blue-deep: #453a18;
+  --blue-light: #c6b177;
+  --blue-pale: #eee2c3;
+
+  --gold: #b97514;
+  --gold-light: #e8a545;
+
+  --celeste-light: #fdf1e3;
+  --celeste: #f4dcc0;
+  --celeste-deep: #dfba8b;
+  --celeste-text: #6b3d10;
+
+  --red: #a83a20;
+  --red-deep: #75220f;
+  --green: #6d7d2e;
+  --green-light: #c8d494;
+  --green-pale: #e8eecb;
+
+  --shadow-soft: 0 2px 6px rgba(58, 33, 9, 0.14);
+  --shadow-card: 0 4px 0 rgba(58, 33, 9, 0.85), 0 6px 12px rgba(58, 33, 9, 0.2);
+  --shadow-deep: 0 8px 0 rgba(58, 33, 9, 0.85), 0 14px 30px rgba(58, 33, 9, 0.24);
+
+  --season-accent: #a83a20;
+  --season-glyph: '\1F342';
+}
+
+:root[data-theme="autumn"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(185, 117, 20, 0.14) 0%, transparent 26%),
+    radial-gradient(circle at 88% 92%, rgba(168, 58, 32, 0.1) 0%, transparent 30%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(58, 33, 9, 0.03) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Halloween — pumpkin on a bruised-purple night
+   -------------------------------------------------------------------------- */
+
+[data-theme="halloween"] {
+  --cream: #ddc7a4;
+  --cream-light: #f0dfbd;
+  --cream-deep: #bfa478;
+  --paper: #fcf3e0;
+
+  --ink: #241033;
+  --ink-soft: #3f1d55;
+  --ink-light: #6d4a87;
+
+  --blue: #5b2a8c;
+  --blue-deep: #35145a;
+  --blue-light: #b493d8;
+  --blue-pale: #e6dbf3;
+
+  --gold: #d9731a;
+  --gold-light: #f7a441;
+
+  --celeste-light: #f1eaf8;
+  --celeste: #ded0ee;
+  --celeste-deep: #bda4da;
+  --celeste-text: #3f1d55;
+
+  --red: #b8331f;
+  --red-deep: #7d1d10;
+  --green: #5a7a22;
+  --green-light: #bcd189;
+  --green-pale: #e2ecc6;
+
+  --shadow-soft: 0 2px 6px rgba(36, 16, 51, 0.18);
+  --shadow-card: 0 4px 0 rgba(36, 16, 51, 0.88), 0 6px 12px rgba(36, 16, 51, 0.26);
+  --shadow-deep: 0 8px 0 rgba(36, 16, 51, 0.88), 0 14px 30px rgba(36, 16, 51, 0.3);
+
+  --season-accent: #d9731a;
+  --season-glyph: '\1F383';
+}
+
+:root[data-theme="halloween"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(217, 115, 26, 0.3) 0%, transparent 32%),
+    radial-gradient(circle at 88% 92%, rgba(91, 42, 140, 0.28) 0%, transparent 36%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(36, 16, 51, 0.035) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Christmas — holly red, pine green, gold trim
+   -------------------------------------------------------------------------- */
+
+[data-theme="christmas"] {
+  --cream: #e3eed8;
+  --cream-light: #f5faee;
+  --cream-deep: #c3d6b2;
+  --paper: #fcfdf8;
+
+  --ink: #1e3320;
+  --ink-soft: #2f4d33;
+  --ink-light: #5f7d63;
+
+  --blue: #1d6b3a;
+  --blue-deep: #0f4423;
+  --blue-light: #92c9a5;
+  --blue-pale: #dcefe1;
+
+  --gold: #c19a2b;
+  --gold-light: #f0cc63;
+
+  --celeste-light: #eef7fb;
+  --celeste: #d3e9f2;
+  --celeste-deep: #a6cfe0;
+  --celeste-text: #17505f;
+
+  --red: #b32430;
+  --red-deep: #7c121c;
+  --green: #2c7a42;
+  --green-light: #a5d8b4;
+  --green-pale: #d9f0e0;
+
+  --shadow-soft: 0 2px 6px rgba(30, 51, 32, 0.14);
+  --shadow-card: 0 4px 0 rgba(30, 51, 32, 0.85), 0 6px 12px rgba(30, 51, 32, 0.2);
+  --shadow-deep: 0 8px 0 rgba(30, 51, 32, 0.85), 0 14px 30px rgba(30, 51, 32, 0.24);
+
+  --season-accent: #b32430;
+  --season-glyph: '\1F384';
+}
+
+:root[data-theme="christmas"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(179, 36, 48, 0.1) 0%, transparent 26%),
+    radial-gradient(circle at 88% 92%, rgba(44, 122, 66, 0.12) 0%, transparent 30%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(30, 51, 32, 0.03) 39px 40px);
+}
+
+/* --------------------------------------------------------------------------
+   Theme picker
+   -------------------------------------------------------------------------- */
+
+.theme-switcher {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 900;
+  font-family: var(--font-ui);
+}
+
+.theme-switcher__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--cream-light) 0%, var(--cream-deep) 100%);
+  border: var(--border-medium);
+  border-radius: 6px;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+
+.theme-switcher__toggle:hover,
+.theme-switcher__toggle:focus-visible {
+  background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+}
+
+.theme-switcher__toggle:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.theme-switcher__panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.6rem);
+  width: 16.5rem;
+  max-height: min(70vh, 28rem);
+  overflow-y: auto;
+  padding: 0.75rem;
+  background: var(--paper);
+  border: var(--border-thick);
+  border-radius: 8px;
+  box-shadow: var(--shadow-deep);
+}
+
+.theme-switcher__panel[hidden] {
+  display: none;
+}
+
+.theme-switcher__title {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--ink);
+}
+
+.theme-switcher__hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--ink-light);
+}
+
+.theme-switcher__option {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  margin-bottom: 0.25rem;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--ink);
+  background: var(--cream-light);
+  border: var(--border-thin);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.theme-switcher__option:hover,
+.theme-switcher__option:focus-visible {
+  background: var(--cream-deep);
+}
+
+.theme-switcher__option[aria-current="true"] {
+  background: var(--cream-deep);
+  border: var(--border-medium);
+  font-weight: bold;
+}
+
+.theme-switcher__option-window {
+  margin-left: auto;
+  font-size: 0.65rem;
+  color: var(--ink-light);
+  white-space: nowrap;
+}
+
+.theme-switcher__option[aria-current="true"] .theme-switcher__option-window {
+  color: var(--ink-soft);
+}
+
+@media (max-width: 640px) {
+  .theme-switcher {
+    right: 0.6rem;
+    bottom: 0.6rem;
+  }
+
+  .theme-switcher__panel {
+    width: min(15rem, calc(100vw - 1.8rem));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Theme gallery (themes.html)
+   --------------------------------------------------------------------------
+   Each card carries its own data-theme, so the tokens above resolve inside the
+   card and every preview shows its real palette side by side.
+   -------------------------------------------------------------------------- */
+
+.theme-gallery {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.theme-gallery__intro {
+  max-width: 46rem;
+  margin: 0 auto 2rem;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.theme-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+}
+
+.theme-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: var(--border-thick);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.theme-card__preview {
+  padding: 1rem;
+  background: linear-gradient(180deg, var(--cream-light) 0%, var(--cream) 100%);
+  border-bottom: var(--border-medium);
+}
+
+.theme-card__name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: var(--ink);
+}
+
+.theme-card__blurb {
+  margin: 0 0 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.theme-card__swatches {
+  display: flex;
+  gap: 0.3rem;
+  margin: 0 0 0.75rem;
+}
+
+.theme-card__swatch {
+  flex: 1;
+  height: 2rem;
+  border: var(--border-thin);
+  border-radius: 3px;
+}
+
+.theme-card__mock {
+  padding: 0.55rem 0.7rem;
+  background: var(--paper);
+  border: var(--border-medium);
+  border-radius: 5px;
+  box-shadow: var(--shadow-soft);
+}
+
+.theme-card__mock-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--ink);
+}
+
+.theme-card__mock-meta {
+  font-size: 0.68rem;
+  color: var(--ink-light);
+}
+
+.theme-card__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.theme-card__window {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+}
+
+.theme-card__window.is-now {
+  font-weight: bold;
+  color: var(--season-accent);
+}
+
+.theme-card__open {
+  display: inline-block;
+  padding: 0.5rem 0.8rem;
+  text-align: center;
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: bold;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--cream-light) 0%, var(--cream-deep) 100%);
+  border: var(--border-medium);
+  border-radius: 5px;
+  box-shadow: var(--shadow-soft);
+}
+
+.theme-card__open:hover,
+.theme-card__open:focus-visible {
+  background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+}
