@@ -78,21 +78,13 @@
       var grid = document.getElementById('theme-gallery-grid');
       if (!grid || !window.VCLThemes) return;
 
-      var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var emblem = window.VCLThemes.markup;
       var SWATCHES = ['--cream', '--cream-deep', '--ink', '--gold', '--red', '--green'];
       var activeToday = window.VCLThemes.forDate(new Date());
 
-      function labelDate(mmdd) {
-        var parts = mmdd.split('-');
-        return MONTHS[parseInt(parts[0], 10) - 1] + ' ' + parseInt(parts[1], 10);
-      }
-
       function windowText(theme) {
         if (!theme.windows.length) return 'Available all year';
-        return theme.windows.map(function (w) {
-          return labelDate(w[0]) + ' – ' + labelDate(w[1]);
-        }).join('  ·  ');
+        return window.VCLThemes.describeWindows(theme);
       }
 
       window.VCLThemes.list().forEach(function (theme) {
@@ -108,8 +100,8 @@
 
         card.innerHTML =
           '<div class="theme-card__preview">' +
-          '<h2 class="theme-card__name"><span aria-hidden="true">' + theme.glyph + '</span>' +
-          theme.label + '</h2>' +
+          '<h2 class="theme-card__name">' +
+          emblem(theme.emblem, 'theme-card__emblem') + theme.label + '</h2>' +
           '<p class="theme-card__blurb">' + theme.blurb + '</p>' +
           '<div class="theme-card__swatches" aria-hidden="true">' + swatches + '</div>' +
           '<div class="theme-card__mock">' +

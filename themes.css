@@ -20,15 +20,59 @@
    -------------------------------------------------------------------------- */
 
 :root {
-  /* Accent + ornament every theme may override. The classic look opts out of
-     the ornament by leaving the glyph empty. */
+  /* The accent every theme may override; all the seasonal marks are drawn in
+     it, so a season's ornaments always match its paper. */
   --season-accent: var(--gold);
-  --season-glyph: '';
-  --season-fx-size: 1.6rem;
 }
 
-/* The falling-ornament layer (snow, leaves, bats…). Purely decorative, so it
-   never takes pointer events and disappears for reduced-motion visitors. */
+/* --- the crest under the masthead ---------------------------------------- */
+
+/* A drawn rule with the season's emblem set into the middle. themes.js leaves
+   it out entirely for the classic look, which wears no season. */
+.season-crest {
+  display: block;
+  width: min(300px, 70%);
+  height: auto;
+  margin: 0.7rem auto 0;
+  color: var(--season-accent);
+}
+
+.season-crest__rule path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.season-crest__rule circle {
+  fill: currentColor;
+  opacity: 0.55;
+}
+
+/* --- the background wash -------------------------------------------------- */
+
+/* A sparse tile of the season's own marks, sitting behind everything: it is
+   what carries the theme across the gaps between panels. z-index keeps it
+   under the content but over the body's paper texture. */
+.season-pattern {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: var(--season-accent);
+  opacity: 0.1;
+}
+
+.season-pattern svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- the drifting marks --------------------------------------------------- */
+
+/* Purely decorative, so it never takes pointer events, is hidden from
+   assistive tech, and is dropped for reduced-motion visitors. */
 .season-fx {
   position: fixed;
   inset: 0;
@@ -40,11 +84,16 @@
 .season-fx span {
   position: absolute;
   top: -8vh;
-  font-size: var(--season-fx-size);
-  line-height: 1;
-  opacity: 0.75;
+  display: block;
+  line-height: 0;
   animation: season-fall linear infinite;
   will-change: transform;
+}
+
+.season-fx__mark {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 @keyframes season-fall {
@@ -61,19 +110,6 @@
   .season-fx {
     display: none;
   }
-}
-
-/* The season ornament flanking the header, drawn from --season-glyph. */
-.site-header .season-mark {
-  display: block;
-  font-size: 1.4rem;
-  letter-spacing: 0.6rem;
-  margin: 0.35rem 0 0;
-  opacity: 0.85;
-}
-
-.site-header .season-mark::before {
-  content: var(--season-glyph);
 }
 
 /* --------------------------------------------------------------------------
@@ -118,7 +154,6 @@
   --shadow-deep: 0 8px 0 rgba(42, 31, 10, 0.85), 0 14px 30px rgba(42, 31, 10, 0.22);
 
   --season-accent: #c9962b;
-  --season-glyph: '';
 }
 
 /* --------------------------------------------------------------------------
@@ -159,7 +194,6 @@
   --shadow-deep: 0 8px 0 rgba(25, 21, 64, 0.85), 0 14px 30px rgba(25, 21, 64, 0.24);
 
   --season-accent: #f4d370;
-  --season-glyph: '\2728';
 }
 
 :root[data-theme="newyear"] body {
@@ -207,7 +241,6 @@
   --shadow-deep: 0 8px 0 rgba(70, 17, 47, 0.8), 0 14px 30px rgba(70, 17, 47, 0.24);
 
   --season-accent: #c02b4c;
-  --season-glyph: '\2764';
 }
 
 :root[data-theme="valentines"] body {
@@ -255,7 +288,6 @@
   --shadow-deep: 0 8px 0 rgba(47, 64, 33, 0.75), 0 14px 30px rgba(47, 64, 33, 0.22);
 
   --season-accent: #d4658a;
-  --season-glyph: '\1F430';
 }
 
 :root[data-theme="easter"] body {
@@ -303,7 +335,6 @@
   --shadow-deep: 0 8px 0 rgba(19, 63, 74, 0.8), 0 14px 30px rgba(19, 63, 74, 0.22);
 
   --season-accent: #e08c1e;
-  --season-glyph: '\2600';
 }
 
 :root[data-theme="summer"] body {
@@ -351,7 +382,6 @@
   --shadow-deep: 0 8px 0 rgba(58, 33, 9, 0.85), 0 14px 30px rgba(58, 33, 9, 0.24);
 
   --season-accent: #a83a20;
-  --season-glyph: '\1F342';
 }
 
 :root[data-theme="autumn"] body {
@@ -399,7 +429,6 @@
   --shadow-deep: 0 8px 0 rgba(36, 16, 51, 0.88), 0 14px 30px rgba(36, 16, 51, 0.3);
 
   --season-accent: #d9731a;
-  --season-glyph: '\1F383';
 }
 
 :root[data-theme="halloween"] body {
@@ -447,7 +476,6 @@
   --shadow-deep: 0 8px 0 rgba(30, 51, 32, 0.85), 0 14px 30px rgba(30, 51, 32, 0.24);
 
   --season-accent: #b32430;
-  --season-glyph: '\1F384';
 }
 
 :root[data-theme="christmas"] body {
@@ -514,6 +542,16 @@
   display: none;
 }
 
+/* The emblem on the button and beside each option. Each option's icon carries
+   its own data-theme, so every season's mark shows in its own accent even
+   while the page around it wears another. */
+.theme-switcher__icon {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--season-accent);
+}
+
 .theme-switcher__title {
   margin: 0 0 0.15rem;
   font-family: var(--font-display);
@@ -531,7 +569,7 @@
 
 .theme-switcher__option {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.5rem;
   width: 100%;
   padding: 0.45rem 0.55rem;
@@ -559,9 +597,10 @@
 
 .theme-switcher__option-window {
   margin-left: auto;
+  padding-left: 0.4rem;
   font-size: 0.65rem;
+  text-align: right;
   color: var(--ink-light);
-  white-space: nowrap;
 }
 
 .theme-switcher__option[aria-current="true"] .theme-switcher__option-window {
@@ -623,10 +662,17 @@
   border-bottom: var(--border-medium);
 }
 
+.theme-card__emblem {
+  flex: 0 0 auto;
+  width: 1.6rem;
+  height: 1.6rem;
+  color: var(--season-accent);
+}
+
 .theme-card__name {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   margin: 0 0 0.15rem;
   font-family: var(--font-display);
   font-size: 1.15rem;

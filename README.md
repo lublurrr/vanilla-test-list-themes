@@ -93,18 +93,28 @@ Two edits, and nothing else in the site needs to know about it:
    tokens (`--easy`, `--medium`, `--hard`) are deliberately left alone, so
    blue/gold/red mean the same thing all year round.
 
-2. **`themes.js`** — add an entry to the `THEMES` table:
+2. **`themes.js`** — draw the season's marks into the `MARK` library, then add
+   an entry to the `THEMES` table:
 
    ```js
+   MARK.mask = '<path ' + SOLID + ' d="…"/>';   // inner markup, 24×24 viewBox
+
    {
      id: 'carnival',
      label: 'Carnival',
-     glyph: '\uD83C\uDFAD',          // shown in the header and the picker
      blurb: 'Confetti and masks.',
-     windows: [['02-01', '02-06']], // inclusive, "MM-DD"; wraps past New Year
-     fx: ['\uD83C\uDFAD', '\uD83C\uDF8A'] // the drifting ornaments, or []
+     windows: [['02-01', '02-06']],  // inclusive, "MM-DD"; wraps past New Year
+     emblem: MARK.mask,              // the crest and the picker's icon
+     fall: [MARK.mask, MARK.confetti],  // drifts down, and tiles the wash
+     tints: ['--red', '--gold', '--blue']  // palette tokens the marks cycle
    }
    ```
+
+   Marks are inner markup for a **24×24 viewBox**, and they inherit their
+   colour, so use `currentColor` — the `LINE` and `SOLID` constants at the top
+   of the file carry the shared stroke weight and fill. A mark is drawn as
+   small as 20px, so keep the silhouette bold: fine serrations and interior
+   detail turn to mush at that size. Reuse a mark from another season freely.
 
 The theme gallery, the picker and the header ornament all read from that table,
 so all three pick the new season up on their own.
@@ -131,12 +141,28 @@ Archive's celeste, the Library's brown and gold are set per page in
 the ornaments and the picker rather than in the panel colours. That is
 intentional: the three windows are meant to stay tellable apart.
 
-### Decoration and accessibility
+### The three ornaments
 
-Each season can drift a few emoji down the page (`fx` in the table). That layer
-is decorative only: it never takes pointer events, it is hidden from screen
-readers, and it is removed entirely for visitors with
-`prefers-reduced-motion: reduce`.
+A season dresses the page in three places, all built from the same `fall` and
+`emblem` marks so they read as one set:
+
+- **The crest** under the masthead — a drawn rule with the season's emblem set
+  into the middle of it. The classic look wears none.
+- **The wash** — a sparse tile of the season's marks behind the whole page, at
+  10% opacity. It is what carries the theme across the gaps between panels.
+- **The drift** — marks falling slowly down the page, each one taking its size,
+  tilt, speed and tint at random within the season's `tints`.
+
+No emoji anywhere: they render differently on every platform, can't take the
+palette's colour, and never match the site's line work. Every mark is SVG drawn
+on the same 24×24 grid at the same stroke weight.
+
+### Accessibility
+
+The wash and the drift are decorative only: both are hidden from assistive
+technology, neither takes pointer events, and the drift is not rendered at all
+for visitors with `prefers-reduced-motion: reduce`. The static wash stays, since
+it does not move.
 
 ## Files you'll edit as a list maintainer
 
