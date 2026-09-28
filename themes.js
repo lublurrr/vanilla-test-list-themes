@@ -455,37 +455,62 @@
     }
   }
 
-  /* The marks that drift down the page. */
-  function renderDrift() {
-    var old = document.querySelector('.season-fx');
-    if (old) old.remove();
+  /* The marks that drift down the page. They fall BEHIND the content, never
+     across it: a snowflake sliding over a case card is exactly the
+     distraction the decoration must not be. Two layers do it:
 
+     - one behind the whole page, over the backdrop and under every panel, so
+       the marks only show in the gaps between boxes;
+     - one inside the masthead, over its painted sky but under the logo and
+       credits, because the sky is opaque and would otherwise hide the page
+       layer there — and the sky is where falling snow looks best. */
+  function driftLayer(className, count, fade) {
     var marks = state.active.fall;
-    if (!marks.length || prefersReducedMotion()) return;
-
     var tints = state.active.tints;
     var layer = document.createElement('div');
-    layer.className = 'season-fx';
+    layer.className = className;
     layer.setAttribute('aria-hidden', 'true');
 
-    for (var i = 0; i < 16; i++) {
+    for (var i = 0; i < count; i++) {
       var piece = document.createElement('span');
       var size = (18 + Math.random() * 16).toFixed(0);
 
       piece.innerHTML = svgMarkup(marks[i % marks.length], 'season-fx__mark');
-      piece.style.left = Math.round((i / 16) * 100 + (Math.random() * 6 - 3)) + '%';
+      piece.style.left = Math.round((i / count) * 100 + (Math.random() * 6 - 3)) + '%';
       piece.style.width = size + 'px';
       piece.style.height = size + 'px';
       piece.style.color = 'var(' + tints[i % tints.length] + ')';
-      piece.style.opacity = (0.35 + Math.random() * 0.35).toFixed(2);
+      piece.style.opacity = ((0.35 + Math.random() * 0.35) * fade).toFixed(2);
       piece.style.setProperty('--drift', (Math.random() * 10 - 5).toFixed(1) + 'vw');
       piece.style.setProperty('--spin', Math.round(Math.random() * 540 - 270) + 'deg');
       piece.style.animationDuration = (13 + Math.random() * 14).toFixed(1) + 's';
       piece.style.animationDelay = (-Math.random() * 24).toFixed(1) + 's';
       layer.appendChild(piece);
     }
+    return layer;
+  }
 
-    document.body.appendChild(layer);
+  function renderDrift() {
+    var old = document.querySelectorAll('.season-fx');
+    for (var i = 0; i < old.length; i++) old[i].remove();
+
+    if (!state.active.fall.length || prefersReducedMotion()) return;
+
+    /* Appended last, so it paints over the backdrop (inserted first) while
+       sharing its z-index below the content. */
+    document.body.appendChild(driftLayer('season-fx', 16, 1));
+
+    var header = document.querySelector(
+      '.site-header:not(.page-hero-archive):not(.page-hero-resources)');
+    if (!header) return;
+
+    /* Straight after the scene, so it falls in front of the hills and behind
+       .header-inner. renderScene re-inserts its SVG at the very start, so a
+       redraw keeps that order. */
+    var sky = driftLayer('season-fx season-fx--sky', 9, 0.8);
+    var scene = header.querySelector('.season-scene');
+    if (scene) scene.insertAdjacentElement('afterend', sky);
+    else header.insertBefore(sky, header.firstChild);
   }
 
   /* -- picker -------------------------------------------------------------- */

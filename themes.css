@@ -75,13 +75,44 @@
 /* --- the drifting marks --------------------------------------------------- */
 
 /* Purely decorative, so it never takes pointer events, is hidden from
-   assistive tech, and is dropped for reduced-motion visitors. */
+   assistive tech, and is dropped for reduced-motion visitors.
+
+   z-index -1 puts it behind every card and box: the marks fall over the
+   backdrop (same z-index, earlier in the DOM) and show only in the gaps
+   between panels. Nothing that carries text is transparent, so a mark can
+   never pass under words that aren't backed by paper. */
 .season-fx {
   position: fixed;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 1;
+  z-index: -1;
+}
+
+/* The masthead's own layer: over its painted sky and horizon, under the logo
+   and credits (.header-inner comes after it in the DOM). It falls through the
+   header's height rather than the viewport's, so every mark spends its whole
+   fall where it can be seen. */
+.season-fx--sky {
+  position: absolute;
+  z-index: auto;
+}
+
+.season-fx--sky span {
+  top: -10%;
+  animation-name: season-fall-sky;
+}
+
+@keyframes season-fall-sky {
+  0% {
+    top: -10%;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  100% {
+    top: 104%;
+    transform: translate3d(var(--drift, 2vw), 0, 0) rotate(var(--spin, 180deg));
+  }
 }
 
 .season-fx span {
