@@ -17,6 +17,7 @@
    Every ornament is drawn as SVG on a 24×24 grid and inherits its colour from
    the palette, so a season's marks always match its paper. No emoji: they
    render differently on every platform and never match the site's line work.
+   The illustrated horizon behind the masthead lives in scenes.js.
    ========================================================================== */
 
 (function () {
@@ -167,7 +168,7 @@
       windows: [['12-28', '01-06']],
       emblem: MARK.burst,
       fall: [MARK.star, MARK.confetti, MARK.streamer, MARK.burst],
-      tints: ['--gold-light', '--blue-light', '--red']
+      tints: ['--gold-light', '--blue-light', '--horizon-accent']
     },
     {
       id: 'valentines',
@@ -176,7 +177,7 @@
       windows: [['02-07', '02-16']],
       emblem: MARK.heart,
       fall: [MARK.heart, MARK.petal],
-      tints: ['--red', '--blue', '--gold-light']
+      tints: ['--paper', '--gold-light', '--blue-light']
     },
     {
       id: 'easter',
@@ -194,7 +195,7 @@
       windows: [['06-15', '08-31']],
       emblem: MARK.sun,
       fall: [MARK.sun, MARK.wave, MARK.shell],
-      tints: ['--gold', '--blue', '--red']
+      tints: ['--paper', '--gold-light', '--red']
     },
     {
       id: 'autumn',
@@ -203,7 +204,7 @@
       windows: [['09-15', '09-30'], ['11-03', '11-30']],
       emblem: MARK.maple,
       fall: [MARK.maple, MARK.leaf, MARK.acorn],
-      tints: ['--red', '--gold', '--green']
+      tints: ['--gold-light', '--gold', '--green-light']
     },
     {
       id: 'halloween',
@@ -212,7 +213,7 @@
       windows: [['10-01', '11-02']],
       emblem: MARK.bat,
       fall: [MARK.bat, MARK.moon, MARK.pumpkin],
-      tints: ['--ink-soft', '--gold', '--blue']
+      tints: ['--gold', '--gold-light', '--blue-light']
     },
     {
       id: 'christmas',
@@ -221,7 +222,7 @@
       windows: [['12-01', '12-27']],
       emblem: MARK.snowflake,
       fall: [MARK.snowflake, MARK.fir, MARK.bauble],
-      tints: ['--blue', '--red', '--gold']
+      tints: ['--paper', '--gold-light', '--red']
     }
   ];
 
@@ -378,9 +379,12 @@
       svgMarkup(markup, 'season-crest', '0 0 300 40'));
   }
 
-  /* A sparse tile of the season's marks, washed in behind the whole page. */
-  function renderPattern() {
-    var old = document.querySelector('.season-pattern');
+  /* The backdrop behind the whole page: the season's own colour and weave
+     (--scene in themes.css), with a sparse tile of its marks washed over it.
+     A fixed layer rather than a body background, because a fixed background
+     is ignored on iOS and the scene would smear down the full page height. */
+  function renderBackdrop() {
+    var old = document.querySelector('.season-backdrop');
     if (old) old.remove();
 
     var marks = state.active.fall;
@@ -399,14 +403,56 @@
     }).join('');
 
     var layer = document.createElement('div');
-    layer.className = 'season-pattern';
+    layer.className = 'season-backdrop';
     layer.setAttribute('aria-hidden', 'true');
     layer.innerHTML = '<svg aria-hidden="true" focusable="false">' +
       '<defs><pattern id="season-tile" width="168" height="168" ' +
       'patternUnits="userSpaceOnUse">' + cells + '</pattern></defs>' +
       '<rect width="100%" height="100%" fill="url(#season-tile)"/></svg>';
 
-    document.body.appendChild(layer);
+    document.body.insertBefore(layer, document.body.firstChild);
+  }
+
+  /* The illustrated scene behind the masthead, drawn by scenes.js at the
+     header's real size. A ResizeObserver redraws it whenever that size
+     changes: the logo loading, a font swapping in, a window resize. The
+     archive and library heroes keep their own identity and get no scene. */
+  var sceneDrawn = { id: '', w: 0, h: 0 };
+  var sceneObserver = null;
+
+  function renderScene(force) {
+    var header = document.querySelector(
+      '.site-header:not(.page-hero-archive):not(.page-hero-resources)');
+    if (!header) return;
+
+    var id = state.active.id;
+    var w = header.clientWidth;
+    var h = header.clientHeight;
+    if (!force && id === sceneDrawn.id &&
+      Math.abs(w - sceneDrawn.w) < 2 && Math.abs(h - sceneDrawn.h) < 2) return;
+    sceneDrawn = { id: id, w: w, h: h };
+
+    var old = header.querySelector('.season-scene');
+    if (old) old.remove();
+
+    if (window.VCLScenes && window.VCLScenes.has(id)) {
+      var logo = header.querySelector('.site-logo');
+      var clear = (logo ? logo.getBoundingClientRect().width / 2 : Math.min(w * 0.3, 250)) + 24;
+      header.insertAdjacentHTML('afterbegin', window.VCLScenes.draw(id, w, h, clear));
+    }
+
+    if (!sceneObserver && window.ResizeObserver) {
+      var queued = false;
+      sceneObserver = new ResizeObserver(function () {
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(function () {
+          queued = false;
+          renderScene(false);
+        });
+      });
+      sceneObserver.observe(header);
+    }
   }
 
   /* The marks that drift down the page. */
@@ -568,7 +614,8 @@
 
   function dress() {
     renderCrest();
-    renderPattern();
+    renderBackdrop();
+    renderScene(true);
     renderDrift();
     renderSwitcher();
   }
@@ -599,6 +646,12 @@
     forDate: function (date) { return themeForDate(date).id; },
     markup: svgMarkup,
     describeWindows: describeWindows,
+    /* For scenes.js, which draws with the same marks and asks for a redraw
+       once it has loaded. */
+    marks: MARK,
+    redraw: function () {
+      if (document.body) renderScene(true);
+    },
     set: setTheme
   };
 }());

@@ -25,6 +25,9 @@
        <html data-theme="..."> before the first paint, so the classic
        palette never flashes on its way to the season. -->
   <script src="themes.js"></script>
+  <!-- The illustrated horizons. Deferred: it only draws once the page is
+       laid out, and the masthead's colours are already right without it. -->
+  <script src="scenes.js" defer></script>
 </head>
 
 <body>
@@ -71,8 +74,10 @@
 
   <script>
     /* Builds one card per theme straight from the THEMES table in themes.js,
-       so a season added there shows up here with no extra edits. */
-    (function () {
+       so a season added there shows up here with no extra edits. Waits for
+       DOMContentLoaded because scenes.js is deferred, and deferred scripts
+       run after this inline one. */
+    document.addEventListener('DOMContentLoaded', function () {
       'use strict';
 
       var grid = document.getElementById('theme-gallery-grid');
@@ -99,6 +104,9 @@
         var isNow = theme.id === activeToday;
 
         card.innerHTML =
+          '<div class="theme-card__scene">' +
+          '<span class="theme-card__medallion">' + emblem(theme.emblem, 'theme-card__emblem-lg') +
+          '</span></div>' +
           '<div class="theme-card__preview">' +
           '<h2 class="theme-card__name">' +
           emblem(theme.emblem, 'theme-card__emblem') + theme.label + '</h2>' +
@@ -117,8 +125,15 @@
           '</div>';
 
         grid.appendChild(card);
+
+        /* Drawn after the card is in the grid, so it knows its real width. */
+        var scene = card.querySelector('.theme-card__scene');
+        if (window.VCLScenes && window.VCLScenes.has(theme.id)) {
+          scene.insertAdjacentHTML('afterbegin',
+            window.VCLScenes.draw(theme.id, scene.clientWidth, scene.clientHeight, 34));
+        }
       });
-    }());
+    });
   </script>
 </body>
 

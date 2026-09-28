@@ -13,6 +13,7 @@ button in the bottom-right corner lets anyone pick a different one.
 | **Theme gallery** | [`themes.html`](themes.html) — every theme side by side |
 | **Theme palettes** | [`themes.css`](themes.css) — one block of colour tokens per season |
 | **Theme logic** | [`themes.js`](themes.js) — which theme, and when |
+| **Scenes** | [`scenes.js`](scenes.js) — the illustrated horizon behind the masthead |
 
 Two differences from the live repository, both deliberate:
 
@@ -43,6 +44,7 @@ vanilla-case-list/
 │   └── cases/               Many case logos
 ├── themes.css               Seasonal palettes — one block of tokens per season
 ├── themes.js                Picks the season, remembers the visitor's choice
+├── scenes.js                Draws each season's illustrated horizon
 ├── themes.html              Gallery of every theme, built from the THEMES table
 ├── GITHUB_PAGES_SETUP.md    Beginner guide to hosting on GitHub Pages
 └── README.md                This file
@@ -116,8 +118,16 @@ Two edits, and nothing else in the site needs to know about it:
    small as 20px, so keep the silhouette bold: fine serrations and interior
    detail turn to mush at that size. Reuse a mark from another season freely.
 
-The theme gallery, the picker and the header ornament all read from that table,
-so all three pick the new season up on their own.
+3. **For a scene** (optional — a season without one still gets its palette,
+   backdrop and marks): add the `--scene`, `--scene-sky`, `--scene-ink*`,
+   `--scene-accent` and `--horizon-*` tokens to its block in `themes.css`, and
+   a drawing function to the `SCENES` table in `scenes.js`. The function gets
+   the header's width and height, the half-width of the logo's column to keep
+   clear, a horizon height, a size unit and a seeded random source; `ridge()`,
+   `swell()` and `mark()` do most of the work.
+
+The theme gallery, the picker and the masthead all read from those tables, so
+they pick the new season up on their own.
 
 ### Checking your work
 
@@ -141,21 +151,50 @@ Archive's celeste, the Library's brown and gold are set per page in
 the ornaments and the picker rather than in the panel colours. That is
 intentional: the three windows are meant to stay tellable apart.
 
-### The three ornaments
+### What sets each season apart
 
-A season dresses the page in three places, all built from the same `fall` and
-`emblem` marks so they read as one set:
+The palettes keep every panel on readable paper. The seasons part company
+behind it, in two places:
 
-- **The crest** under the masthead — a drawn rule with the season's emblem set
-  into the middle of it. The classic look wears none.
-- **The wash** — a sparse tile of the season's marks behind the whole page, at
-  10% opacity. It is what carries the theme across the gaps between panels.
-- **The drift** — marks falling slowly down the page, each one taking its size,
-  tilt, speed and tint at random within the season's `tints`.
+**The masthead is a scene.** Each season paints the header as a sky, puts a
+light right behind the logo, and draws a horizon along the bottom:
 
-No emoji anywhere: they render differently on every platform, can't take the
-palette's colour, and never match the site's line work. Every mark is SVG drawn
-on the same 24×24 grid at the same stroke weight.
+| Season | Sky | Behind the logo | Horizon |
+| --- | --- | --- | --- |
+| New Year | midnight, starfield | gold glow | fireworks over a lit skyline |
+| Valentine's | rose | pale blush | heart garlands, a lace edge |
+| Easter | spring blue | soft sun | clouds, tulips and painted eggs on the hills |
+| Summer | sea-sky to peach | sun haze | gulls, a sail, three swells of surf |
+| Autumn | amber sunset | warm haze | a line of turning trees on the hill |
+| Halloween | bruised purple | **the full moon** | a bare tree, a leaning graveyard, bats |
+| Christmas | winter night | lamplight | snowy pines and a lit cabin |
+
+The horizon is drawn by `scenes.js` at the header's real pixel size, not scaled
+from a fixed canvas, and redrawn whenever that size changes. It steps aside for
+the logo's column, and the ridges calm down towards the middle so the credits
+and crest always sit on open sky. Each season's shapes are seeded, so the scene
+is the same on every visit.
+
+The light and the moon are anchored to where the logo actually is (`--logo-w`
+and `--logo-cy` in `themes.css`), not to a percentage of the header: on a phone
+the header is shorter, and a percentage slid the moon down behind the credits.
+
+**The page has a backdrop.** Behind the panels, each season has a colour and a
+weave of its own: a starfield for New Year, tufted satin quilting for
+Valentine's, painted-egg stripes and polka dots for Easter, seigaiha waves for
+Summer, a woollen flannel plaid for Autumn, a spider's web in the corner of the
+night for Halloween, a gift-wrap lattice dusted with snow for Christmas. A
+sparse tile of the season's marks is washed over it, and the marks drift down
+the page on top.
+
+Nothing is read straight off the backdrop: every panel sits on paper, and the
+Archive and Library footers, which used to be transparent, get a paper band
+when a scene is on. The Archive and Library heroes keep their own identity and
+get no scene.
+
+Every mark is SVG drawn on the same 24×24 grid at the same stroke weight. No
+emoji: they render differently on every platform, can't take the palette's
+colour, and never match the site's line work.
 
 ### Accessibility
 
