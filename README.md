@@ -107,8 +107,7 @@ Two edits, and nothing else in the site needs to know about it:
      blurb: 'Confetti and masks.',
      windows: [['02-01', '02-06']],  // inclusive, "MM-DD"; wraps past New Year
      emblem: MARK.mask,              // the crest and the picker's icon
-     fall: [MARK.mask, MARK.confetti],  // drifts down, and tiles the wash
-     tints: ['--red', '--gold', '--blue']  // palette tokens the marks cycle
+     fall: [MARK.mask, MARK.confetti]   // tiled into the background wash
    }
    ```
 
@@ -184,16 +183,10 @@ weave of its own: a starfield for New Year, tufted satin quilting for
 Valentine's, painted-egg stripes and polka dots for Easter, seigaiha waves for
 Summer, a woollen flannel plaid for Autumn, a spider's web in the corner of the
 night for Halloween, a gift-wrap lattice dusted with snow for Christmas. A
-sparse tile of the season's marks is washed over it, and more marks drift down
-through it.
+sparse tile of the season's marks is washed over it.
 
-**The falling marks stay in the background.** They drift behind every card and
-box, never across them: one layer falls behind the whole page, over the
-backdrop and under the panels, so it only shows in the gaps between boxes; a
-second falls through the masthead's sky, over the horizon but under the logo
-and credits. A pixel comparison with the marks frozen mid-fall confirms it:
-across 80 boxes with 93 marks behind them, not one box changes by a pixel
-(with the layer forced back on top, 57 of 72 do).
+**Nothing moves.** An earlier version had marks falling down the page; they
+were taken out, so the themes are entirely still.
 
 Nothing is read straight off the backdrop: every panel sits on paper, and the
 Archive and Library footers, which used to be transparent, get a paper band
@@ -206,10 +199,8 @@ colour, and never match the site's line work.
 
 ### Accessibility
 
-The wash and the drift are decorative only: both are hidden from assistive
-technology, neither takes pointer events, and the drift is not rendered at all
-for visitors with `prefers-reduced-motion: reduce`. The static wash stays, since
-it does not move.
+The wash and the scene are decorative only: both are hidden from assistive
+technology and neither takes pointer events.
 
 ## Files you'll edit as a list maintainer
 

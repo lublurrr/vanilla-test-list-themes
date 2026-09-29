@@ -33,8 +33,7 @@
 
   /* -- the drawn marks ----------------------------------------------------- */
   /* Each is inner markup for a 24×24 viewBox. `emblem` is the header crest and
-     the picker's icon; `fall` are the shapes that drift down the page and tile
-     the background wash. */
+     the picker's icon; `fall` are the shapes tiled into the background wash. */
 
   var MARK = {
     scales:
@@ -158,8 +157,7 @@
       blurb: 'The courtroom cream the list has always worn.',
       windows: [],
       emblem: MARK.scales,
-      fall: [],
-      tints: ['--gold']
+      fall: []
     },
     {
       id: 'newyear',
@@ -167,8 +165,7 @@
       blurb: 'Midnight navy, gold sparks over the rooftops.',
       windows: [['12-28', '01-06']],
       emblem: MARK.burst,
-      fall: [MARK.star, MARK.confetti, MARK.streamer, MARK.burst],
-      tints: ['--gold-light', '--blue-light', '--horizon-accent']
+      fall: [MARK.star, MARK.confetti, MARK.streamer, MARK.burst]
     },
     {
       id: 'valentines',
@@ -176,8 +173,7 @@
       blurb: 'Rose paper, plum ink, a letter half-written.',
       windows: [['02-07', '02-16']],
       emblem: MARK.heart,
-      fall: [MARK.heart, MARK.petal],
-      tints: ['--paper', '--gold-light', '--blue-light']
+      fall: [MARK.heart, MARK.petal]
     },
     {
       id: 'easter',
@@ -185,8 +181,7 @@
       blurb: 'Pastel spring, painted shells, first blossom.',
       windows: [['03-20', '04-21']],
       emblem: MARK.egg,
-      fall: [MARK.egg, MARK.tulip, MARK.blossom],
-      tints: ['--red', '--green', '--blue']
+      fall: [MARK.egg, MARK.tulip, MARK.blossom]
     },
     {
       id: 'summer',
@@ -194,8 +189,7 @@
       blurb: 'Sun-bleached sand, a long tide, salt in the air.',
       windows: [['06-15', '08-31']],
       emblem: MARK.sun,
-      fall: [MARK.sun, MARK.wave, MARK.shell],
-      tints: ['--paper', '--gold-light', '--red']
+      fall: [MARK.sun, MARK.wave, MARK.shell]
     },
     {
       id: 'autumn',
@@ -203,8 +197,7 @@
       blurb: 'Amber and rust, the year turning over.',
       windows: [['09-15', '09-30'], ['11-03', '11-30']],
       emblem: MARK.maple,
-      fall: [MARK.maple, MARK.leaf, MARK.acorn],
-      tints: ['--gold-light', '--gold', '--green-light']
+      fall: [MARK.maple, MARK.leaf, MARK.acorn]
     },
     {
       id: 'halloween',
@@ -212,8 +205,7 @@
       blurb: 'Pumpkin light on a bruised-purple night.',
       windows: [['10-01', '11-02']],
       emblem: MARK.bat,
-      fall: [MARK.bat, MARK.moon, MARK.pumpkin],
-      tints: ['--gold', '--gold-light', '--blue-light']
+      fall: [MARK.bat, MARK.moon, MARK.pumpkin]
     },
     {
       id: 'christmas',
@@ -221,8 +213,7 @@
       blurb: 'Holly red, deep pine, gold on the trim.',
       windows: [['12-01', '12-27']],
       emblem: MARK.snowflake,
-      fall: [MARK.snowflake, MARK.fir, MARK.bauble],
-      tints: ['--paper', '--gold-light', '--red']
+      fall: [MARK.snowflake, MARK.fir, MARK.bauble]
     }
   ];
 
@@ -351,11 +342,6 @@
 
   /* -- ornaments ----------------------------------------------------------- */
 
-  function prefersReducedMotion() {
-    return window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-
   /* The crest under the masthead: a drawn rule with the season's emblem set
      into the middle of it. */
   function renderCrest() {
@@ -453,64 +439,6 @@
       });
       sceneObserver.observe(header);
     }
-  }
-
-  /* The marks that drift down the page. They fall BEHIND the content, never
-     across it: a snowflake sliding over a case card is exactly the
-     distraction the decoration must not be. Two layers do it:
-
-     - one behind the whole page, over the backdrop and under every panel, so
-       the marks only show in the gaps between boxes;
-     - one inside the masthead, over its painted sky but under the logo and
-       credits, because the sky is opaque and would otherwise hide the page
-       layer there — and the sky is where falling snow looks best. */
-  function driftLayer(className, count, fade) {
-    var marks = state.active.fall;
-    var tints = state.active.tints;
-    var layer = document.createElement('div');
-    layer.className = className;
-    layer.setAttribute('aria-hidden', 'true');
-
-    for (var i = 0; i < count; i++) {
-      var piece = document.createElement('span');
-      var size = (18 + Math.random() * 16).toFixed(0);
-
-      piece.innerHTML = svgMarkup(marks[i % marks.length], 'season-fx__mark');
-      piece.style.left = Math.round((i / count) * 100 + (Math.random() * 6 - 3)) + '%';
-      piece.style.width = size + 'px';
-      piece.style.height = size + 'px';
-      piece.style.color = 'var(' + tints[i % tints.length] + ')';
-      piece.style.opacity = ((0.35 + Math.random() * 0.35) * fade).toFixed(2);
-      piece.style.setProperty('--drift', (Math.random() * 10 - 5).toFixed(1) + 'vw');
-      piece.style.setProperty('--spin', Math.round(Math.random() * 540 - 270) + 'deg');
-      piece.style.animationDuration = (13 + Math.random() * 14).toFixed(1) + 's';
-      piece.style.animationDelay = (-Math.random() * 24).toFixed(1) + 's';
-      layer.appendChild(piece);
-    }
-    return layer;
-  }
-
-  function renderDrift() {
-    var old = document.querySelectorAll('.season-fx');
-    for (var i = 0; i < old.length; i++) old[i].remove();
-
-    if (!state.active.fall.length || prefersReducedMotion()) return;
-
-    /* Appended last, so it paints over the backdrop (inserted first) while
-       sharing its z-index below the content. */
-    document.body.appendChild(driftLayer('season-fx', 16, 1));
-
-    var header = document.querySelector(
-      '.site-header:not(.page-hero-archive):not(.page-hero-resources)');
-    if (!header) return;
-
-    /* Straight after the scene, so it falls in front of the hills and behind
-       .header-inner. renderScene re-inserts its SVG at the very start, so a
-       redraw keeps that order. */
-    var sky = driftLayer('season-fx season-fx--sky', 9, 0.8);
-    var scene = header.querySelector('.season-scene');
-    if (scene) scene.insertAdjacentElement('afterend', sky);
-    else header.insertBefore(sky, header.firstChild);
   }
 
   /* -- picker -------------------------------------------------------------- */
@@ -641,7 +569,6 @@
     renderCrest();
     renderBackdrop();
     renderScene(true);
-    renderDrift();
     renderSwitcher();
   }
 
