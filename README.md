@@ -76,10 +76,11 @@ on its way to the season.
 | New Year | `newyear` | Dec 28 – Jan 6 |
 | Valentine's | `valentines` | Feb 7 – Feb 16 |
 | Easter | `easter` | Mar 20 – Apr 21 |
-| Summer | `summer` | Jun 15 – Aug 31 |
-| Autumn | `autumn` | Sep 15 – Sep 30, Nov 3 – Nov 30 |
 | Halloween | `halloween` | Oct 1 – Nov 2 |
 | Christmas | `christmas` | Dec 1 – Dec 27 |
+
+Any day outside every window wears Classic Vanilla — which now includes the
+summer months and most of the autumn, since those two seasons were removed.
 
 Easter moves around the calendar, so its window is a generous spring band
 rather than an exact date. Where two windows overlap, the **tighter** one wins,
@@ -122,8 +123,8 @@ Two edits, and nothing else in the site needs to know about it:
    `--scene-accent` and `--horizon-*` tokens to its block in `themes.css`, and
    a drawing function to the `SCENES` table in `scenes.js`. The function gets
    the header's width and height, the half-width of the logo's column to keep
-   clear, a horizon height, a size unit and a seeded random source; `ridge()`,
-   `swell()` and `mark()` do most of the work.
+   clear, a horizon height, a size unit and a seeded random source; `ridge()`
+   and `mark()` do most of the work.
 
 The theme gallery, the picker and the masthead all read from those tables, so
 they pick the new season up on their own.
@@ -163,8 +164,6 @@ light right behind the logo, and draws a horizon along the bottom:
 | New Year | midnight, starfield | gold glow | fireworks over a lit skyline |
 | Valentine's | rose | pale blush | heart garlands, a lace edge |
 | Easter | spring blue | soft sun | clouds, tulips and painted eggs on the hills |
-| Summer | sea-sky to peach | sun haze | gulls, a sail, three swells of surf |
-| Autumn | amber sunset | warm haze | a line of turning trees on the hill |
 | Halloween | bruised purple | **the full moon** | a bare tree, a leaning graveyard, bats |
 | Christmas | winter night | lamplight | snowy pines and a lit cabin |
 
@@ -180,9 +179,9 @@ the header is shorter, and a percentage slid the moon down behind the credits.
 
 **The page has a backdrop.** Behind the panels, each season has a colour and a
 weave of its own: a starfield for New Year, tufted satin quilting for
-Valentine's, painted-egg stripes and polka dots for Easter, seigaiha waves for
-Summer, a woollen flannel plaid for Autumn, a spider's web in the corner of the
-night for Halloween, a gift-wrap lattice dusted with snow for Christmas. A
+Valentine's, painted-egg stripes and polka dots for Easter, a spider's web in
+the corner of the night for Halloween, a gift-wrap lattice dusted with snow for
+Christmas. A
 sparse tile of the season's marks is washed over it.
 
 **Nothing moves.** An earlier version had marks falling down the page; they

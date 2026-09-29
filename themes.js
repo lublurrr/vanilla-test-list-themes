@@ -81,38 +81,6 @@
       '<circle cx="12" cy="16.4" r="2.9"/><circle cx="7.4" cy="11.9" r="2.9"/></g>' +
       '<circle cx="12" cy="11.9" r="1.5" fill="none" stroke="currentColor" stroke-width="1.2"/>',
 
-    sun:
-      '<circle cx="12" cy="9.6" r="3.5" ' + LINE + '/>' +
-      '<path d="M12 2.4v1.8M12 15v1.7M4.4 9.6h1.8M17.8 9.6h1.8' +
-      'M6.7 4.3l1.3 1.3M16 13.6l1.3 1.3M17.3 4.3L16 5.6M8 13.6l-1.3 1.3" ' + LINE + '/>' +
-      '<path d="M2.6 19.5c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2" ' + LINE + '/>',
-
-    wave:
-      '<path d="M2 10c2.5 0 2.5-2.6 5-2.6S9.5 10 12 10s2.5-2.6 5-2.6S19.5 10 22 10" ' + LINE + '/>' +
-      '<path d="M2 16c2.5 0 2.5-2.6 5-2.6S9.5 16 12 16s2.5-2.6 5-2.6S19.5 16 22 16" ' + LINE + '/>',
-
-    shell:
-      '<path d="M12 20.4c-4.4 0-8-3.8-8-8.6C4 7.5 7.6 4 12 4s8 3.5 8 7.8c0 4.8-3.6 8.6-8 8.6z" '
-      + LINE + '/>' +
-      '<path d="M12 20.4V4M8.4 19.3l1.8-14.6M15.6 19.3l-1.8-14.6" ' + LINE + '/>',
-
-    maple:
-      /* Five bold lobes, no micro-serrations: the fine teeth of a botanical
-         maple disappear below about 40px, and the mark is drawn at 20–36. */
-      '<path ' + SOLID + ' d="M12 2 13.6 6.4 17.6 4.6 16.8 9 21.6 8.6 18.6 12.4 22 15.2 ' +
-      '16.4 15 13.2 17.6 12.9 22 11.1 22 10.8 17.6 7.6 15 2 15.2 5.4 12.4 2.4 8.6 7.2 9 ' +
-      '6.4 4.6 10.4 6.4Z"/>',
-
-    leaf:
-      '<path ' + SOLID + ' d="M20 4c0 8.2-4.7 13.2-11 13.2-1.3 0-2.5-.2-3.6-.6C6.6 8.8 12.3 4 20 4z"/>' +
-      '<path d="M18.2 5.8L4.6 19.4" ' + LINE + '/>',
-
-    acorn:
-      '<path ' + SOLID + ' d="M12 21.2c-3.2 0-5.7-2.7-5.7-6.3 0-2.6 2.1-4.9 5.7-4.9s5.7 2.3 5.7 4.9' +
-      'c0 3.6-2.5 6.3-5.7 6.3z"/>' +
-      '<rect x="5.4" y="7.9" width="13.2" height="2.4" rx="1.2" ' + SOLID + '/>' +
-      '<path d="M12 7.9V5.2" ' + LINE + '/>',
-
     bat:
       '<path ' + SOLID + ' d="M1.8 8.2c1.9.2 3 1.3 3.5 2.7.5-2 1.7-3.1 3.1-3.1.6 0 1.1.2 1.5.5' +
       'L12 6.1l2.1 2.2c.4-.3.9-.5 1.5-.5 1.4 0 2.6 1.1 3.1 3.1.5-1.4 1.6-2.5 3.5-2.7' +
@@ -182,22 +150,6 @@
       windows: [['03-20', '04-21']],
       emblem: MARK.egg,
       fall: [MARK.egg, MARK.tulip, MARK.blossom]
-    },
-    {
-      id: 'summer',
-      label: 'Summer',
-      blurb: 'Sun-bleached sand, a long tide, salt in the air.',
-      windows: [['06-15', '08-31']],
-      emblem: MARK.sun,
-      fall: [MARK.sun, MARK.wave, MARK.shell]
-    },
-    {
-      id: 'autumn',
-      label: 'Autumn',
-      blurb: 'Amber and rust, the year turning over.',
-      windows: [['09-15', '09-30'], ['11-03', '11-30']],
-      emblem: MARK.maple,
-      fall: [MARK.maple, MARK.leaf, MARK.acorn]
     },
     {
       id: 'halloween',
@@ -448,8 +400,8 @@
     return theme.windows.map(describeWindow).join(', ');
   }
 
-  /* A window inside one month collapses to "Sep 15–30". Autumn's two windows
-     spelled out in full overflow the picker; collapsed, they fit. */
+  /* A window inside one month collapses to "Feb 7–16", which keeps the
+     picker's date column narrow. */
   function describeWindow(window) {
     var from = window[0].split('-');
     var to = window[1].split('-');

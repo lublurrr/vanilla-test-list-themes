@@ -2,8 +2,7 @@
    Vanilla Case List — Seasonal scenes
    --------------------------------------------------------------------------
    The illustrated horizon behind the masthead: a skyline for New Year,
-   rolling hills for Easter, the tide for Summer, a graveyard hill for
-   Halloween, and so on. themes.js decides when to draw one; this file only
+   rolling hills for Easter, a graveyard hill for Halloween, and so on. themes.js decides when to draw one; this file only
    knows how.
 
    Every scene is drawn procedurally at the header's real pixel size, rather
@@ -86,18 +85,6 @@
       top: top,
       draw: function (token) { return '<path d="' + d + '"' + fill(token) + '/>'; }
     };
-  }
-
-  /* A sine swell for the sea, with an optional line of foam along its crest. */
-  function swell(ctx, base, amp, length, phase, token, foam) {
-    var line = '';
-    for (var x = 0; x <= ctx.w + 8; x += 8) {
-      var y = ctx.h - base - amp * Math.sin(x / length * TAU + phase);
-      line += (x ? 'L' : 'M') + n(x) + ' ' + n(y);
-    }
-    var body = '<path d="' + line + 'L' + n(ctx.w + 8) + ' ' + ctx.h + 'L0 ' + ctx.h + 'Z"' +
-      fill(token) + '/>';
-    return body + (foam ? '<path d="' + line + '"' + stroke('--horizon-light', 1.6 * ctx.u + 0.6, 0.65) + '/>' : '');
   }
 
   /* -- New Year: fireworks over a lit skyline ------------------------------ */
@@ -305,77 +292,6 @@
     return out;
   }
 
-  /* -- Summer: gulls, a sail, and the tide -------------------------------- */
-
-  function summer(ctx) {
-    var out = '';
-    [[0.09, 0.2, 1], [0.15, 0.3, 0.7], [0.84, 0.16, 1.1], [0.9, 0.26, 0.8], [0.77, 0.34, 0.6]].forEach(function (g) {
-      var x = g[0] * ctx.w;
-      var y = g[1] * ctx.h;
-      var s = g[2] * 1.3 * ctx.u;
-      if (inCentre(ctx, x, 20)) return;
-      out += '<path d="M' + n(x - 12 * s) + ' ' + n(y) + 'Q' + n(x - 6 * s) + ' ' + n(y - 7 * s) + ' ' +
-        n(x) + ' ' + n(y) + 'Q' + n(x + 6 * s) + ' ' + n(y - 7 * s) + ' ' + n(x + 12 * s) + ' ' + n(y) + '"' +
-        stroke('--horizon-near', 2 * s + 0.3, 0.8) + '/>';
-    });
-
-    var farBase = ctx.hz * 0.62;
-    out += swell(ctx, farBase, 3 * ctx.u, 60 * ctx.u + 20, 0, '--horizon-far', false);
-
-    /* A sail on the far water, on whichever side has room. */
-    var bx = ctx.w * 0.82;
-    if (ctx.u > 0.4 && !inCentre(ctx, bx, 30 * ctx.u)) {
-      var s = ctx.u;
-      var by = ctx.h - farBase;
-      out += '<path d="M' + n(bx - 18 * s) + ' ' + n(by) + 'H' + n(bx + 18 * s) + 'L' + n(bx + 12 * s) +
-        ' ' + n(by + 7 * s) + 'H' + n(bx - 12 * s) + 'Z"' + fill('--horizon-near') + '/>' +
-        '<path d="M' + n(bx) + ' ' + n(by) + 'V' + n(by - 36 * s) + '"' + stroke('--horizon-near', 1.6 * s) + '/>' +
-        '<path d="M' + n(bx + 1.5 * s) + ' ' + n(by - 34 * s) + 'V' + n(by - 3 * s) + 'H' + n(bx + 17 * s) +
-        'Z"' + fill('--horizon-light') + '/>' +
-        '<path d="M' + n(bx - 1.5 * s) + ' ' + n(by - 27 * s) + 'V' + n(by - 3 * s) + 'H' + n(bx - 13 * s) +
-        'Z"' + fill('--horizon-accent') + '/>';
-    }
-
-    out += swell(ctx, ctx.hz * 0.42, 5 * ctx.u, 110 * ctx.u + 30, 1.2, '--horizon-mid', true);
-    out += swell(ctx, ctx.hz * 0.2, 4 * ctx.u, 70 * ctx.u + 20, 2.6, '--horizon-near', true);
-    return out;
-  }
-
-  /* -- Autumn: a line of turning trees on the hill ------------------------- */
-
-  function autumn(ctx) {
-    var out = '';
-    var leafTints = ['--horizon-accent', '--gold-light', '--red'];
-    [[0.08, 0.22, 36, -20], [0.17, 0.52, 22, 30], [0.9, 0.18, 42, 15], [0.82, 0.48, 26, -35],
-      [0.96, 0.64, 20, 10]].forEach(function (l, i) {
-      var x = l[0] * ctx.w;
-      if (inCentre(ctx, x, l[2] * ctx.u)) return;
-      out += mark(MARK.maple, x, l[1] * ctx.h, l[2] * ctx.u, l[3], leafTints[i % leafTints.length], 0.6);
-    });
-
-    var far = ridge(ctx, ctx.hz * 0.58, ctx.hz * 0.14, 1.2, 0.8);
-    out += far.draw('--horizon-far');
-
-    var crowns = ['--red', '--gold', '--gold-light', '--green', '--horizon-accent'];
-    var rand = ctx.rand;
-    for (var x = 8 * ctx.u; x < ctx.w; x += (20 + rand() * 20) * ctx.u) {
-      if (inCentre(ctx, x, 14 * ctx.u)) continue;
-      var height = ctx.hz * (0.4 + rand() * 0.32);
-      var base = far.top(x) + 3;
-      var crown = crowns[Math.floor(rand() * crowns.length)];
-      out += '<rect x="' + n(x - height * 0.045) + '" y="' + n(base - height * 0.5) + '" width="' +
-        n(height * 0.09) + '" height="' + n(height * 0.5) + '"' + fill('--horizon-near') + '/>' +
-        '<circle cx="' + n(x) + '" cy="' + n(base - height * 0.66) + '" r="' + n(height * 0.3) + '"' +
-        fill(crown) + '/>' +
-        '<circle cx="' + n(x + height * 0.15) + '" cy="' + n(base - height * 0.5) + '" r="' +
-        n(height * 0.2) + '"' + fill(crown, 0.85) + '/>';
-    }
-
-    out += ridge(ctx, ctx.hz * 0.36, ctx.hz * 0.08, 2.3, 2).draw('--horizon-mid');
-    out += ridge(ctx, ctx.hz * 0.16, ctx.hz * 0.05, 3.4, 0.5).draw('--horizon-near');
-    return out;
-  }
-
   /* -- Halloween: a bare tree, a leaning graveyard, bats across the moon --- */
 
   function branch(ctx, x, y, length, angle, width, depth) {
@@ -507,8 +423,6 @@
     newyear: newyear,
     valentines: valentines,
     easter: easter,
-    summer: summer,
-    autumn: autumn,
     halloween: halloween,
     christmas: christmas
   };
