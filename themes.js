@@ -1,18 +1,19 @@
 /* ==========================================================================
    Vanilla Case List — Seasonal theme engine
    --------------------------------------------------------------------------
-   Picks a theme for the time of year, lets the visitor override it, and keeps
-   that choice for next time. The palettes live in themes.css; this file owns
-   the theme id on <html data-theme="…"> and the season's drawn ornaments.
+   Picks a theme for the time of year, from the date on the visitor's own
+   clock. There is no menu and nothing to remember: every visitor sees the
+   season their calendar is in. The palettes live in themes.css; this file
+   owns the theme id on <html data-theme="…"> and the season's drawn ornaments.
 
    Load it from <head> WITHOUT defer so the attribute is set before the first
    paint — otherwise the classic palette flashes before the season kicks in.
 
    Resolution order, highest first:
-     1. ?theme=<id> in the URL      (one-off preview, not remembered)
-     2. the visitor's saved choice  (localStorage, unless it is "auto")
-     3. today's date                (the windows in the THEMES table)
-     4. "classic"
+     1. ?theme=<id> in the URL      (a one-off preview for checking a season
+                                     out of season; not remembered)
+     2. today's date, local time    (the windows in the THEMES table)
+     3. "classic"
 
    Every ornament is drawn as SVG on a 24×24 grid and inherits its colour from
    the palette, so a season's marks always match its paper. No emoji: they
@@ -22,9 +23,6 @@
 
 (function () {
   'use strict';
-
-  var STORAGE_KEY = 'vcl-seasonal-theme';
-  var AUTO = 'auto';
 
   /* Shared attribute sets, so every mark shares one weight and one join. */
   var LINE = 'fill="none" stroke="currentColor" stroke-width="1.5" ' +
@@ -109,11 +107,7 @@
     bauble:
       '<circle cx="12" cy="14.3" r="5.7" ' + SOLID + '/>' +
       '<rect x="10.6" y="6.9" width="2.8" height="2.4" rx=".6" ' + SOLID + '/>' +
-      '<path d="M12 6.9V3.9" ' + LINE + '/>',
-
-    calendar:
-      '<rect x="3.6" y="5.2" width="16.8" height="15.2" rx="2" ' + LINE + '/>' +
-      '<path d="M8 3.2v4M16 3.2v4M3.6 10.2h16.8" ' + LINE + '/>'
+      '<path d="M12 6.9V3.9" ' + LINE + '/>'
   };
 
   /* Date windows are "MM-DD" and inclusive on both ends. A window whose end
@@ -237,24 +231,15 @@
     return best || byId('classic');
   }
 
-  /* -- preference ---------------------------------------------------------- */
+  /* -- which theme ---------------------------------------------------------- */
 
-  /* localStorage is unavailable in some privacy modes; a lost preference is
-     not worth breaking the page over. */
-  function readStored() {
-    try {
-      return window.localStorage.getItem(STORAGE_KEY);
-    } catch (err) {
-      return null;
-    }
-  }
-
-  function writeStored(value) {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, value);
-    } catch (err) {
-      /* ignore */
-    }
+  /* Earlier versions had a theme menu and saved the visitor's pick under this
+     key. With the menu gone that pick would be invisible and unchangeable, so
+     it is ignored, and cleared so it doesn't linger in their browser. */
+  try {
+    window.localStorage.removeItem('vcl-seasonal-theme');
+  } catch (err) {
+    /* storage unavailable (some privacy modes): nothing to clear */
   }
 
   function readUrlTheme() {
@@ -263,11 +248,9 @@
   }
 
   var state = {
-    /* The stored preference: a theme id, or AUTO to follow the calendar. */
-    preference: AUTO,
     /* The theme actually on screen. */
     active: byId('classic'),
-    /* A ?theme= preview overrides the preference without replacing it. */
+    /* True when a ?theme= link chose it rather than the date. */
     previewed: false
   };
 
@@ -277,11 +260,6 @@
       state.previewed = true;
       return byId(urlTheme);
     }
-
-    var stored = readStored();
-    state.preference = stored && (stored === AUTO || byId(stored)) ? stored : AUTO;
-
-    if (state.preference !== AUTO) return byId(state.preference);
     return themeForDate(new Date());
   }
 
@@ -289,7 +267,7 @@
     state.active = theme;
     document.documentElement.setAttribute('data-theme', theme.id);
     document.documentElement.setAttribute('data-theme-source',
-      state.previewed ? 'url' : (state.preference === AUTO ? 'season' : 'manual'));
+      state.previewed ? 'url' : 'season');
   }
 
   /* -- ornaments ----------------------------------------------------------- */
@@ -393,15 +371,14 @@
     }
   }
 
-  /* -- picker -------------------------------------------------------------- */
+  /* -- date labels (for the gallery) --------------------------------------- */
 
   function describeWindows(theme) {
     if (!theme.windows.length) return 'all year';
     return theme.windows.map(describeWindow).join(', ');
   }
 
-  /* A window inside one month collapses to "Feb 7–16", which keeps the
-     picker's date column narrow. */
+  /* A window inside one month collapses to "Feb 7–16". */
   function describeWindow(window) {
     var from = window[0].split('-');
     var to = window[1].split('-');
@@ -415,124 +392,12 @@
       : fromMonth + ' ' + fromDay + '–' + toMonth + ' ' + toDay;
   }
 
-  function renderSwitcher() {
-    var existing = document.querySelector('.theme-switcher');
-    if (existing) existing.remove();
-
-    var wrap = document.createElement('div');
-    wrap.className = 'theme-switcher';
-
-    var toggle = document.createElement('button');
-    toggle.type = 'button';
-    toggle.className = 'theme-switcher__toggle';
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-haspopup', 'true');
-    toggle.innerHTML = svgMarkup(state.active.emblem, 'theme-switcher__icon') +
-      '<span>Theme: ' + state.active.label + '</span>';
-
-    var panel = document.createElement('div');
-    panel.className = 'theme-switcher__panel';
-    panel.hidden = true;
-    panel.setAttribute('role', 'group');
-    panel.setAttribute('aria-label', 'Seasonal theme');
-
-    var title = document.createElement('p');
-    title.className = 'theme-switcher__title';
-    title.textContent = 'Seasonal theme';
-    panel.appendChild(title);
-
-    var hint = document.createElement('p');
-    hint.className = 'theme-switcher__hint';
-    hint.textContent = state.previewed
-      ? 'Previewing a theme from the link you followed. Pick one below to keep it.'
-      : 'Leave it on Automatic and the site dresses itself for the time of year.';
-    panel.appendChild(hint);
-
-    var options = [{
-      id: AUTO,
-      label: 'Automatic',
-      emblem: MARK.calendar,
-      windowText: 'follows the date'
-    }].concat(THEMES.map(function (theme) {
-      return {
-        id: theme.id,
-        label: theme.label,
-        emblem: theme.emblem,
-        windowText: describeWindows(theme)
-      };
-    }));
-
-    options.forEach(function (option) {
-      var button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'theme-switcher__option';
-      button.setAttribute('aria-current',
-        (!state.previewed && option.id === state.preference) ? 'true' : 'false');
-      button.innerHTML =
-        svgMarkup(option.emblem, 'theme-switcher__icon', null,
-          option.id === AUTO ? null : option.id) +
-        '<span>' + option.label + '</span>' +
-        '<span class="theme-switcher__option-window">' + option.windowText + '</span>';
-      button.addEventListener('click', function () {
-        setTheme(option.id);
-        closePanel();
-      });
-      panel.appendChild(button);
-    });
-
-    function openPanel() {
-      panel.hidden = false;
-      toggle.setAttribute('aria-expanded', 'true');
-      document.addEventListener('click', onOutsideClick, true);
-      document.addEventListener('keydown', onEscape);
-    }
-
-    function closePanel() {
-      panel.hidden = true;
-      toggle.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('click', onOutsideClick, true);
-      document.removeEventListener('keydown', onEscape);
-    }
-
-    function onOutsideClick(event) {
-      if (!wrap.contains(event.target)) closePanel();
-    }
-
-    function onEscape(event) {
-      if (event.key === 'Escape') {
-        closePanel();
-        toggle.focus();
-      }
-    }
-
-    toggle.addEventListener('click', function () {
-      if (panel.hidden) openPanel();
-      else closePanel();
-    });
-
-    wrap.appendChild(panel);
-    wrap.appendChild(toggle);
-    document.body.appendChild(wrap);
-  }
-
   /* -- public surface ------------------------------------------------------ */
 
   function dress() {
     renderCrest();
     renderBackdrop();
     renderScene(true);
-    renderSwitcher();
-  }
-
-  function setTheme(id) {
-    if (id !== AUTO && !byId(id)) return;
-
-    state.previewed = false;
-    state.preference = id;
-    writeStored(id);
-    apply(id === AUTO ? themeForDate(new Date()) : byId(id));
-
-    if (document.body) dress();
   }
 
   apply(resolve());
@@ -546,7 +411,6 @@
   window.VCLThemes = {
     list: function () { return THEMES.slice(); },
     active: function () { return state.active.id; },
-    preference: function () { return state.preference; },
     forDate: function (date) { return themeForDate(date).id; },
     markup: svgMarkup,
     describeWindows: describeWindows,
@@ -555,7 +419,6 @@
     marks: MARK,
     redraw: function () {
       if (document.body) renderScene(true);
-    },
-    set: setTheme
+    }
   };
 }());

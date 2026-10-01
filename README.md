@@ -4,9 +4,10 @@ This is the **theme workshop** for the [Vanilla Case List](https://github.com/lu
 a full, working copy of the site with a seasonal theme layer on top, so new
 looks can be built and tried out here without touching the live list.
 
-Left to itself, the site now dresses for the time of year — pumpkins through
-late October, holly through December, pastels around Easter — and a theme
-button in the bottom-right corner lets anyone pick a different one.
+The site dresses itself for the time of year — pumpkins through late October,
+holly through December, pastels around Easter — from the date on each
+visitor's own clock. There is no theme menu: everyone sees the season their
+calendar is in.
 
 | | |
 | --- | --- |
@@ -43,7 +44,7 @@ vanilla-case-list/
 ├── images/
 │   └── cases/               Many case logos
 ├── themes.css               Seasonal palettes — one block of tokens per season
-├── themes.js                Picks the season, remembers the visitor's choice
+├── themes.js                Picks the season from the visitor's date
 ├── scenes.js                Draws each season's illustrated horizon
 ├── themes.html              Gallery of every theme, built from the THEMES table
 ├── GITHUB_PAGES_SETUP.md    Beginner guide to hosting on GitHub Pages
@@ -57,12 +58,18 @@ vanilla-case-list/
 `themes.js` sets `data-theme="…"` on `<html>`, and every rule in `themes.css`
 hangs off that attribute. It resolves in this order, highest first:
 
-1. **`?theme=<id>` in the URL** — a one-off preview, not remembered. Handy for
-   sharing a look: `index.html?theme=christmas`.
-2. **The visitor's saved choice** — whatever they last picked in the theme
-   button, kept in `localStorage`. Choosing *Automatic* clears it.
-3. **Today's date** — the windows in the `THEMES` table below.
-4. **`classic`** — the courtroom cream the list has always worn.
+1. **`?theme=<id>` in the URL** — a one-off preview for checking a season out
+   of season, e.g. `index.html?theme=christmas`. It is not remembered: the next
+   page goes back to the date. Nothing on the site links to it except the
+   gallery's previews.
+2. **Today's date, on the visitor's clock** — the windows in the `THEMES`
+   table below. A visitor in Tokyo and one in London on either side of
+   midnight can briefly see different seasons; that is by design.
+3. **`classic`** — the courtroom cream the list has always worn.
+
+Earlier versions had a theme menu that saved the visitor's pick in
+`localStorage`. With the menu gone, a saved pick would be stuck and
+unchangeable, so it is ignored and cleared on the next visit.
 
 The script is loaded from `<head>` *without* `defer` on purpose: it has to set
 the attribute before the first paint, or the classic palette flashes on screen
@@ -107,7 +114,7 @@ Two edits, and nothing else in the site needs to know about it:
      label: 'Carnival',
      blurb: 'Confetti and masks.',
      windows: [['02-01', '02-06']],  // inclusive, "MM-DD"; wraps past New Year
-     emblem: MARK.mask,              // the crest and the picker's icon
+     emblem: MARK.mask,              // the crest and the gallery's icon
      fall: [MARK.mask, MARK.confetti]   // tiled into the background wash
    }
    ```
@@ -126,20 +133,19 @@ Two edits, and nothing else in the site needs to know about it:
    clear, a horizon height, a size unit and a seeded random source; `ridge()`
    and `mark()` do most of the work.
 
-The theme gallery, the picker and the masthead all read from those tables, so
-they pick the new season up on their own.
+The theme gallery and the masthead both read from those tables, so they pick
+the new season up on their own.
 
 ### Checking your work
 
 There is nothing to build — open `index.html` in a browser, or serve the folder
-with `python3 -m http.server`. To see a season out of season, use the theme
-button, or a URL: `themes.html?theme=halloween`. To check what the calendar
-would choose on a given day, from the browser console:
+with `python3 -m http.server`. To see a season out of season, open its card in
+the gallery, or use a URL: `index.html?theme=halloween`. To check what the
+calendar would choose on a given day, from the browser console:
 
 ```js
 VCLThemes.forDate(new Date('2026-10-31'))  // "halloween"
-VCLThemes.set('christmas')                  // switch, and remember it
-VCLThemes.set('auto')                       // go back to following the date
+VCLThemes.active()                          // what this page is wearing
 ```
 
 ### What a theme does and does not touch
@@ -147,8 +153,8 @@ VCLThemes.set('auto')                       // go back to following the date
 A theme re-tints the shared palette, so the Case List follows it wholesale. The
 Ultimate Archive and the Resource Library keep their own page identities — the
 Archive's celeste, the Library's brown and gold are set per page in
-`styles.css` — so on those two pages the season shows in the background wash,
-the ornaments and the picker rather than in the panel colours. That is
+`styles.css` — so on those two pages the season shows in the backdrop rather
+than in the panel colours. That is
 intentional: the three windows are meant to stay tellable apart.
 
 ### What sets each season apart
