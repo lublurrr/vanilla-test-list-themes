@@ -70,18 +70,12 @@
   <!-- Resource link strip -->
   <nav class="resources-nav" aria-label="Related resources">
     <div class="resources-inner resources-inner--split">
-      <!-- The Archive and the Library are pages of their own, not outbound
-           links, so they get their own row and their own artwork. Each card
-           wears its page's identity: celeste for the Archive, candlelit brown
-           and gold for the Library. The WebP art is a 480px cut of the
-           page's 1440px logo (27 KB and 25 KB against 177 KB and 845 KB);
-           the PNG is the fallback for browsers without WebP. -->
+      <!-- This site's other two pages get a row of their own as large
+           cards, each in its page's own colours; the outbound links
+           sit in the row below. -->
       <div class="resource-pages">
         <a class="resource-page resource-page--archive" href="archive.html">
-          <picture class="resource-page__art">
-            <source srcset="images/vua-logo-card.webp" type="image/webp" />
-            <img src="images/vua-logo.png" alt="" width="480" height="240" />
-          </picture>
+          <span class="resource-page__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M3 7l2-4h14l2 4"/><path d="M9 12h6"/></svg></span>
           <span class="resource-page__text">
             <strong class="resource-page__title">Ultimate Archive</strong>
             <span class="resource-page__blurb">Every case findable on Attorney Online, organized by year.</span>
@@ -89,10 +83,7 @@
           </span>
         </a>
         <a class="resource-page resource-page--library" href="resources.html">
-          <picture class="resource-page__art">
-            <source srcset="images/vrl-logo-card.webp" type="image/webp" />
-            <img src="images/vrl-logo.png" alt="" width="480" height="240" />
-          </picture>
+          <span class="resource-page__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
           <span class="resource-page__text">
             <strong class="resource-page__title">Resource Library</strong>
             <span class="resource-page__blurb">Guides, tools and community links for casing on Vanilla.</span>
@@ -123,6 +114,19 @@
           <span class="resource-text"><strong>Frequently Asked Questions</strong><span>How this all works</span></span>
         </button>
       </div>
+
+      <!-- The gallery of every season. Full width on a line of its own, so on
+           a phone it never sits alone in a half-empty row. Its sky, emblem and
+           season name are the visitor's current season, filled in by
+           themes.js; without JavaScript it reads as a plain link. -->
+      <a class="resource-season" href="themes.html">
+        <span class="resource-season__emblem" data-season-emblem><svg width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></span>
+        <strong class="resource-season__title">Seasonal Themes</strong>
+        <span class="resource-season__now">Now: <span data-season-name>the season&rsquo;s look</span></span>
+        <span class="resource-season__cta"><span class="resource-season__cta-text">See every look</span> <span aria-hidden="true">&rarr;</span></span>
+      </a>
     </div>
   </nav>
 

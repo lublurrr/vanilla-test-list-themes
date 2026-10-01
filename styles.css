@@ -669,12 +669,12 @@ body.page-resources .resource-icon {
   color: var(--cream-deep);
 }
 
-/* --- Case List: the site's own pages first, then the outbound links -------
-   The Ultimate Archive and the Resource Library are pages of this site, not
-   links off it, so on the Case List they get a row of their own as large
-   cards, each in its page's own colours and with its page's logo. The four
-   outbound links share the row below, four across, so nothing is ever left
-   alone on a line of its own. Other pages keep the single-row strip. */
+/* --- The site's own pages first, then the outbound links -----------------
+   The Case List, the Ultimate Archive and the Resource Library are pages of
+   this site, not links off it, so each page shows the other two as large
+   cards on a row of their own, each in its page's own colours. The outbound
+   links share the row below, in full rows only, so nothing is ever left
+   alone on a line of its own. */
 
 .resources-inner--split {
   display: flex;
@@ -690,10 +690,10 @@ body.page-resources .resource-icon {
 
 .resource-page {
   display: grid;
-  grid-template-columns: minmax(120px, 42%) 1fr;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 1rem;
-  padding: 0.7rem 1rem 0.7rem 0.7rem;
+  padding: 0.95rem 1.2rem;
   border: var(--border-medium);
   border-radius: 6px;
   color: inherit;
@@ -717,19 +717,20 @@ body.page-resources .resource-icon {
   outline-offset: 3px;
 }
 
-/* The art keeps the logos' 2:1 shape, so nothing is cropped. */
-.resource-page__art {
-  display: block;
-  aspect-ratio: 2 / 1;
-  overflow: hidden;
-  border-radius: 4px;
+/* The page's icon on a tile in the page's own colours. */
+.resource-page__icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--border-medium);
+  border-radius: 8px;
 }
 
-.resource-page__art img {
+.resource-page__icon svg {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: 28px;
+  height: 28px;
 }
 
 .resource-page__text {
@@ -765,9 +766,33 @@ body.page-resources .resource-icon {
   transform: translateX(3px);
 }
 
+/* Case List: the courtroom cream and navy the list has always worn. */
+.resource-page--list {
+  background: linear-gradient(180deg, var(--cream-light) 0%, var(--cream) 100%);
+}
+
+.resource-page--list .resource-page__icon {
+  color: var(--gold-light);
+  background: var(--blue-deep);
+}
+
+.resource-page--list .resource-page__title,
+.resource-page--list .resource-page__cta {
+  color: var(--blue-deep);
+}
+
+.resource-page--list .resource-page__blurb {
+  color: var(--ink-soft);
+}
+
 /* Archive: the celeste of its own header. */
 .resource-page--archive {
   background: linear-gradient(180deg, var(--celeste-light) 0%, var(--celeste) 100%);
+}
+
+.resource-page--archive .resource-page__icon {
+  color: var(--celeste-light);
+  background: var(--celeste-text);
 }
 
 .resource-page--archive .resource-page__title,
@@ -784,8 +809,10 @@ body.page-resources .resource-icon {
   background: linear-gradient(180deg, #2a1c10 0%, #1c130b 100%);
 }
 
-.resource-page--library .resource-page__art {
-  box-shadow: 0 0 0 1px rgba(201, 150, 43, 0.5);
+.resource-page--library .resource-page__icon {
+  color: var(--gold-light);
+  background: #3f2c14;
+  border-color: var(--gold);
 }
 
 .resource-page--library .resource-page__title,
@@ -803,9 +830,21 @@ body.page-resources .resource-icon {
   gap: 0.65rem;
 }
 
+/* The Archive and Library have two outbound links: a pair at every width. */
+.resource-links--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 @media (max-width: 900px) {
   .resource-links {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Not even the pair fits on the narrowest phones without crushing. */
+@media (max-width: 340px) {
+  .resource-links--pair {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -817,8 +856,18 @@ body.page-resources .resource-icon {
 
 @media (max-width: 420px) {
   .resource-page {
-    grid-template-columns: 116px 1fr;
-    gap: 0.75rem;
+    gap: 0.8rem;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .resource-page__icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .resource-page__icon svg {
+    width: 24px;
+    height: 24px;
   }
 
   .resource-page__title {

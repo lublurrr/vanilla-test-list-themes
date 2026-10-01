@@ -11,7 +11,7 @@ calendar is in.
 
 | | |
 | --- | --- |
-| **Theme gallery** | [`themes.html`](themes.html) — every theme side by side; not linked from the site, open it by URL |
+| **Theme gallery** | [`themes.html`](themes.html) — every theme side by side; linked from the Seasonal Themes strip on the Case List |
 | **Theme palettes** | [`themes.css`](themes.css) — one block of colour tokens per season |
 | **Theme logic** | [`themes.js`](themes.js) — which theme, and when |
 | **Scenes** | [`scenes.js`](scenes.js) — the illustrated horizon behind the masthead |

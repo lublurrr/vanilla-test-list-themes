@@ -389,6 +389,8 @@
 [data-theme="classic"] {
   --scene: none;
   --scene-sky: linear-gradient(180deg, var(--cream-light) 0%, var(--cream) 100%);
+  --scene-band:
+    linear-gradient(180deg, var(--cream-light) 0%, var(--cream) 100%);
   --scene-ink: var(--ink-soft);
   --scene-ink-soft: var(--ink-light);
   --scene-shadow: transparent;
@@ -412,6 +414,8 @@
   --scene-sky:
     radial-gradient(ellipse calc(var(--logo-w) * 0.9) calc(var(--logo-w) * 0.52) at 50% var(--logo-cy), rgba(255, 236, 170, 0.5) 0%, rgba(244, 211, 112, 0.16) 45%, transparent 75%),
     var(--stars),
+    linear-gradient(180deg, #070a24 0%, #141452 58%, #3a2160 100%);
+  --scene-band:
     linear-gradient(180deg, #070a24 0%, #141452 58%, #3a2160 100%);
 
   --scene-ink: #f6f0dc;
@@ -440,6 +444,8 @@
   --scene-sky:
     radial-gradient(ellipse calc(var(--logo-w) * 0.9) calc(var(--logo-w) * 0.52) at 50% var(--logo-cy), rgba(255, 246, 249, 0.9) 0%, rgba(255, 224, 234, 0.4) 45%, transparent 75%),
     linear-gradient(180deg, #f9c4d3 0%, #ee98b0 55%, #d8698c 100%);
+  --scene-band:
+    linear-gradient(180deg, #f9c4d3 0%, #ee98b0 55%, #d8698c 100%);
 
   --scene-ink: #3d0c27;
   --scene-ink-soft: #6c2049;
@@ -466,6 +472,8 @@
 
   --scene-sky:
     radial-gradient(ellipse calc(var(--logo-w) * 0.9) calc(var(--logo-w) * 0.52) at 50% var(--logo-cy), rgba(255, 252, 230, 0.95) 0%, rgba(255, 246, 200, 0.45) 42%, transparent 72%),
+    linear-gradient(180deg, #b8e0f4 0%, #dcf0f4 55%, #fbf2cc 100%);
+  --scene-band:
     linear-gradient(180deg, #b8e0f4 0%, #dcf0f4 55%, #fbf2cc 100%);
 
   --scene-ink: #2f4021;
@@ -499,6 +507,8 @@
     radial-gradient(circle calc(var(--logo-w) * 0.24) at 50% var(--logo-cy), #fff1d2 0 62%, #ffd79a 74%, rgba(255, 190, 110, 0.45) 84%, transparent 100%),
     radial-gradient(ellipse calc(var(--logo-w) * 0.9) calc(var(--logo-w) * 0.52) at 50% var(--logo-cy), rgba(255, 190, 120, 0.42) 0%, rgba(255, 150, 80, 0.12) 50%, transparent 76%),
     linear-gradient(180deg, #120720 0%, #2a1142 60%, #4a1d4f 100%);
+  --scene-band:
+    linear-gradient(180deg, #120720 0%, #2a1142 60%, #4a1d4f 100%);
 
   --scene-ink: #f3e6ff;
   --scene-ink-soft: #d9c4ec;
@@ -531,6 +541,8 @@
   --scene-sky:
     radial-gradient(ellipse calc(var(--logo-w) * 0.9) calc(var(--logo-w) * 0.52) at 50% var(--logo-cy), rgba(255, 226, 160, 0.55) 0%, rgba(255, 200, 110, 0.18) 45%, transparent 75%),
     var(--stars),
+    linear-gradient(180deg, #0a1f33 0%, #0f3340 55%, #1d4a3c 100%);
+  --scene-band:
     linear-gradient(180deg, #0a1f33 0%, #0f3340 55%, #1d4a3c 100%);
 
   --scene-ink: #f4f1e4;
@@ -605,6 +617,143 @@
 [data-theme]:not([data-theme="classic"]) body.page-resources .site-footer .footer-small {
   color: var(--ink-light);
   opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Seasonal Themes strip (Case List navigation)
+   --------------------------------------------------------------------------
+   A slim, full-width link to the gallery under the outbound links, painted
+   with the current season's sky so it reads as a small window onto it. The
+   fallbacks cover a page with no data-theme yet (JavaScript off). */
+
+.resource-season {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.75rem;
+  padding: 0.6rem 1rem;
+  color: var(--scene-ink, var(--ink));
+  text-decoration: none;
+  text-shadow: 0 1px 1px var(--scene-shadow, transparent), 0 0 8px var(--scene-shadow, transparent);
+  /* The band, not the full sky: the sky's glow and Halloween's moon are
+     anchored to the masthead logo, and on a phone they landed right behind
+     this strip's text (1:1 contrast). The band has no stars either: the star
+     tiles repeat every ~90px, and in a strip this low they lined up into a
+     dotted rule running through the words. */
+  background: var(--scene-band, linear-gradient(180deg, var(--cream-light) 0%, var(--cream) 100%));
+  border: var(--border-medium);
+  border-radius: 6px;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.resource-season:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 var(--ink);
+}
+
+.resource-season:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 var(--ink);
+}
+
+.resource-season:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.resource-season__emblem {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--scene-accent, var(--gold));
+}
+
+.resource-season__emblem svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.resource-season__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+}
+
+.resource-season__now {
+  font-size: 0.82rem;
+  /* The sky's full ink, not its softer one: over the lighter skies the
+     softer ink sat right on the 4.5:1 line. */
+  color: inherit;
+}
+
+.resource-season__cta {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+
+.resource-season__cta [aria-hidden] {
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.resource-season:hover .resource-season__cta [aria-hidden] {
+  transform: translateX(3px);
+}
+
+/* On a phone the strip becomes a fixed two-line block rather than a
+   wrapping row: the emblem on the left, the title over the season in the
+   middle, the call to action on the right. A wrapping row broke into four
+   ragged lines at 360px; this holds its shape at any width. */
+@media (max-width: 600px) {
+  .resource-season {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "emblem title cta"
+      "emblem now   cta";
+    column-gap: 0.7rem;
+    row-gap: 0.05rem;
+  }
+
+  .resource-season__emblem {
+    grid-area: emblem;
+  }
+
+  .resource-season__title {
+    grid-area: title;
+  }
+
+  .resource-season__now {
+    grid-area: now;
+  }
+
+  .resource-season__cta {
+    grid-area: cta;
+    margin-left: 0;
+  }
+}
+
+/* Under 430px "See every look" left the title too little room, and it broke
+   onto two lines. The words stay for screen readers; the arrow stays on
+   screen, and the whole strip is the link. */
+@media (max-width: 430px) {
+  .resource-season__cta-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .resource-season__cta {
+    font-size: 1.1rem;
+  }
 }
 
 /* --------------------------------------------------------------------------

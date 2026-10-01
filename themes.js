@@ -394,7 +394,20 @@
 
   /* -- public surface ------------------------------------------------------ */
 
+  /* Anything marked data-season-name / data-season-emblem (the Seasonal
+     Themes strip on the Case List) shows the season on screen. */
+  function renderSeasonLabels() {
+    var names = document.querySelectorAll('[data-season-name]');
+    for (var i = 0; i < names.length; i++) names[i].textContent = state.active.label;
+
+    var emblems = document.querySelectorAll('[data-season-emblem]');
+    for (var j = 0; j < emblems.length; j++) {
+      emblems[j].innerHTML = svgMarkup(state.active.emblem, 'resource-season__mark');
+    }
+  }
+
   function dress() {
+    renderSeasonLabels();
     renderCrest();
     renderBackdrop();
     renderScene(true);
