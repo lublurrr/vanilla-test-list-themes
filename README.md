@@ -15,6 +15,7 @@ calendar is in.
 | **Theme palettes** | [`themes.css`](themes.css) — one block of colour tokens per season |
 | **Theme logic** | [`themes.js`](themes.js) — which theme, and when |
 | **Scenes** | [`scenes.js`](scenes.js) — the illustrated horizon behind the masthead |
+| **Case Vault** | [`vault/`](vault/) — a linked case-file reader by axestyra, brought over from [Vanilla-Case-List](https://github.com/lublurrr/Vanilla-Case-List); live at `/vault/`, see [`vault/README.md`](vault/README.md) |
 
 Two differences from the live repository, both deliberate:
 
@@ -47,6 +48,9 @@ vanilla-case-list/
 ├── themes.js                Picks the season from the visitor's date
 ├── scenes.js                Draws each season's illustrated horizon
 ├── themes.html              Gallery of every theme, built from the THEMES table
+├── vault/                   Case Vault: case documents as a linked case file (own README)
+├── .nojekyll                Keeps GitHub Pages from running Jekyll, which would turn the
+│                            vault's markdown notes into HTML before vault.js can read them
 ├── GITHUB_PAGES_SETUP.md    Beginner guide to hosting on GitHub Pages
 └── README.md                This file
 ```
