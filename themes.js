@@ -255,12 +255,15 @@
   };
 
   function resolve() {
+    var today = themeForDate(new Date());
     var urlTheme = readUrlTheme();
-    if (urlTheme && byId(urlTheme)) {
+    /* A link to the season the date already picks (the gallery's card for
+       the current season, say) is the automatic theme, not a preview. */
+    if (urlTheme && byId(urlTheme) && urlTheme !== today.id) {
       state.previewed = true;
       return byId(urlTheme);
     }
-    return themeForDate(new Date());
+    return today;
   }
 
   function apply(theme) {
@@ -406,10 +409,11 @@
     }
   }
 
-  /* The Case List's banner is the gold logo only on the automatic theme. A
-     ?theme= preview of another season shows the default logo, so the gold
-     one always means "this is the site as it is today". Both files are the
-     same 1440x720, so the swap moves nothing. */
+  /* The VCL logo (Case List, gallery, vault) is the gold one whenever the
+     site is on its automatic theme. Only a ?theme= preview of a season other
+     than today's shows the default logo, so the gold one always means "this
+     is the site as it is today". Both files are the same 1440x720, so the
+     swap moves nothing. */
   function renderLogo() {
     var logos = document.querySelectorAll('img[data-logo-auto][data-logo-preview]');
     for (var i = 0; i < logos.length; i++) {
