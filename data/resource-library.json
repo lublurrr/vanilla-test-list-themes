@@ -157,6 +157,15 @@
       "description": "An in-depth guide to the Defense Attorney role. Covers the do's and don'ts in some common situations you may find yourself in as Defense."
     },
     {
+      "id": "rl-130",
+      "title": "Yoru's Guide to Advanced Defense",
+      "url": "https://docs.google.com/document/d/1zoJjfTYwZ8E4YPNqSn2xYiESbafYXvpgnWHSu_Gg4Ig/edit?tab=t.0",
+      "category": "Guides",
+      "type": "guide",
+      "creator": "Yoru",
+      "description": "A step past the basics of defending: MMO and mens rea, a table of courtroom objections with counters to common prosecution tactics, and finding the contradiction by trusting the witness."
+    },
+    {
       "id": "rl-15",
       "title": "Attorney Online 2023 Prosecutor Guide",
       "url": "https://docs.google.com/document/d/18UcxK2WRWsZDZFJ4tSMZqhWL8YUhFAlP7mly5BsP_qs/edit#heading=h.qivbv2hq3irr",
@@ -317,6 +326,15 @@
       "type": "Guide",
       "creator": "Funky",
       "description": "An older guide on how to casemake. It is still extremely relevant and can be a great tool/reference point."
+    },
+    {
+      "id": "rl-129",
+      "title": "Yoru's Guide to Case Making",
+      "url": "https://docs.google.com/document/d/10Ovfr5knVrMtzcWNHNyHpmwyvn8qjoziXNLAuE4VK68/edit?tab=t.0",
+      "category": "Casemaking",
+      "type": "Guide",
+      "creator": "Yoru",
+      "description": "Builds a case up from three starting ideas, in three stages: playable, complete, and great. Makes the case for forward, iterative design, and covers witness blocks, fair puzzles and seven ways to frame a contradiction in a testimony."
     },
     {
       "id": "rl-33",
