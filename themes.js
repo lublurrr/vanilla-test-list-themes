@@ -406,7 +406,20 @@
     }
   }
 
+  /* The Case List's banner is the gold logo only on the automatic theme. A
+     ?theme= preview of another season shows the default logo, so the gold
+     one always means "this is the site as it is today". Both files are the
+     same 1440x720, so the swap moves nothing. */
+  function renderLogo() {
+    var logos = document.querySelectorAll('img[data-logo-auto][data-logo-preview]');
+    for (var i = 0; i < logos.length; i++) {
+      var want = logos[i].getAttribute(state.previewed ? 'data-logo-preview' : 'data-logo-auto');
+      if (logos[i].getAttribute('src') !== want) logos[i].setAttribute('src', want);
+    }
+  }
+
   function dress() {
+    renderLogo();
     renderSeasonLabels();
     renderCrest();
     renderBackdrop();
@@ -414,6 +427,23 @@
   }
 
   apply(resolve());
+
+  /* On a preview, swap the logo the moment the parser inserts it rather than
+     at DOMContentLoaded: from cache, the gold logo could otherwise paint for
+     a beat before turning into the default one. MutationObserver callbacks
+     run before the next frame is drawn, so the gold one is never shown. */
+  if (state.previewed && window.MutationObserver) {
+    var logoWatch = new MutationObserver(function () {
+      if (document.querySelector('img[data-logo-auto][data-logo-preview]')) {
+        renderLogo();
+        logoWatch.disconnect();
+      }
+    });
+    logoWatch.observe(document.documentElement, { childList: true, subtree: true });
+    document.addEventListener('DOMContentLoaded', function () {
+      logoWatch.disconnect();
+    });
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', dress);
