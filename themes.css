@@ -630,8 +630,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.3rem 0.75rem;
-  padding: 0.6rem 1rem;
+  gap: 0.25rem 0.7rem;
+  padding: 0.4rem 0.9rem;
   color: var(--scene-ink, var(--ink));
   text-decoration: none;
   text-shadow: 0 1px 1px var(--scene-shadow, transparent), 0 0 8px var(--scene-shadow, transparent);
@@ -665,25 +665,25 @@
 .resource-season__emblem {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   color: var(--scene-accent, var(--gold));
 }
 
 .resource-season__emblem svg {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .resource-season__title {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .resource-season__now {
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   /* The sky's full ink, not its softer one: over the lighter skies the
      softer ink sat right on the 4.5:1 line. */
   color: inherit;
@@ -691,7 +691,7 @@
 
 .resource-season__cta {
   margin-left: auto;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: bold;
   letter-spacing: 0.02em;
 }
